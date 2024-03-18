@@ -74,77 +74,20 @@ class CustomSet
 end
 =end
 
-# class CustomSet
-#   @@sets = []
-
-#   attr_reader :set
-
-#   def self.new(arr = [])
-#     existing_set = @@sets.select { |el_set| el_set.set == arr.uniq.sort }.first
-#     return existing_set unless existing_set.nil?
-#     new_set = allocate
-#     new_set.custom_setup(arr)
-#     @@sets << new_set
-#     new_set
-#   end
-
-#   def custom_setup(arr)
-#     @set = arr.uniq.sort
-#   end
-
-#   def empty?
-#     set == []
-#   end
-
-#   def contains?(el)
-#     set.include?(el)
-#   end
-
-#   def subset?(other_set)
-#     (set - other_set.set) == []
-#   end
-
-#   def disjoint?(other_set)
-#     (set - other_set.set) == set
-#   end
-
-#   def add(el)
-#     CustomSet.new(set << el)
-#   end
-
-#   def intersection(other_set)
-#     CustomSet.new(set.intersection(other_set.set))
-#   end
-
-#   def difference(other_set)
-#     CustomSet.new(set - other_set.set)
-#   end
-
-#   def union(other_set)
-#     CustomSet.new(set | other_set.set)
-#   end
-
-#   CustomSet.new
-# end
-
 class CustomSet
   @@sets = []
 
-  # overriding the default implementation of CustomSet::new was the only way
-  # I could figure to exert control over whether a new object is instantiated or
-  # a previously existing object returned
+  attr_reader :set
+
   def self.new(arr = [])
     existing_set = @@sets.select { |el_set| el_set.set == arr.uniq.sort }.first
     return existing_set unless existing_set.nil?
-    new_set = CustomSet.allocate
+    new_set = allocate
     new_set.custom_setup(arr)
     @@sets << new_set
     new_set
   end
 
-  # still need a way to initialize new objects, but ruby would throw a "private
-  # method" error whenever I tried calling #initialize from inside ::new, so my 
-  # work-around is using this #custom_setup method as the constructor
   def custom_setup(arr)
     @set = arr.uniq.sort
   end
@@ -157,31 +100,27 @@ class CustomSet
     set.include?(el)
   end
 
-  def subset?(other)
-    (set - other.set) == []
+  def subset?(other_set)
+    (set - other_set.set) == []
   end
 
-  def disjoint?(other)
-    (set - other.set) == set
+  def disjoint?(other_set)
+    (set - other_set.set) == set
   end
 
   def add(el)
     CustomSet.new(set << el)
   end
 
-  def intersection(other)
-    CustomSet.new(set.intersection(other.set))
+  def intersection(other_set)
+    CustomSet.new(set.intersection(other_set.set))
   end
 
-  def difference(other)
-    CustomSet.new(set - other.set)
+  def difference(other_set)
+    CustomSet.new(set - other_set.set)
   end
 
-  def union(other)
-    CustomSet.new(set | other.set)
+  def union(other_set)
+    CustomSet.new(set | other_set.set)
   end
-
-  protected
-
-  attr_reader :set
 end
