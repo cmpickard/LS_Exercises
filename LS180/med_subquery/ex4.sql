@@ -20,6 +20,7 @@ SELECT name FROM bidders WHERE EXISTS (SELECT * FROM bids WHERE bidder_id = bidd
 -- instead of a subquery. Can you figure out a SELECT query that uses a JOIN
 --  clause that returns the same output as our solution above?
 
-SELECT DISTINCT bidders.name FROM bidders 
-  JOIN bids ON bidders.id = bids.bidder_id;
--- This gets the order wrong, though
+SELECT name FROM bidders
+  JOIN bids ON bidders.id = bids.bidder_id
+  GROUP BY bidders.id
+  ORDER BY bidders.id;

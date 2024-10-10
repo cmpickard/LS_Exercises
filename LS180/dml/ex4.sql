@@ -2,4 +2,4 @@
 -- SELECT query to get this information. This table may show all attributes of the
 --  parts table.
 
-SELECT * FROM parts WHERE CAST(part_number AS text) LIKE '3%';
+SELECT * FROM parts WHERE part_number::text LIKE '3%';

@@ -8,12 +8,13 @@
 -- reports the current expected income level, and one that reports the
 -- hypothetical maximum. The outputs should look like this:
 
-SELECT sum(services.price) FROM services 
-  JOIN customers_services ON services.id = service_id
-  WHERE service_id IN (5, 7, 9);
+SELECT sum(s.price) FROM services s
+  JOIN customers_services cs
+    ON cs.service_id = s.id
+  WHERE s.price > 100.00;
 
-SELECT sum(price) * (SELECT count(*) FROM customers) AS sum FROM services
-  WHERE price > 100;
+SELECT sum(s.price) * (SELECT count(*) FROM customers) FROM services s
+  WHERE s.price > 100.00;
 
 --  sum
 -- --------

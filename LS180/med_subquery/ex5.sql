@@ -15,4 +15,8 @@
 --     9
 -- (1 row)
 
-SELECT max(count) FROM (SELECT count(*) FROM bids GROUP BY bidder_id) AS count;
+SELECT max(bid_counts.count) FROM 
+  (SELECT bidder_id, count(*) 
+    FROM bids 
+    GROUP BY bidder_id) 
+  AS bid_counts;

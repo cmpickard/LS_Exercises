@@ -6,6 +6,7 @@
 --  One-to-one Training
 -- (1 row)
 
-SELECT services.description FROM customers_services
-  RIGHT OUTER JOIN services ON services.id = customers_services.service_id
-  WHERE service_id IS NULL;
+SELECT s.description FROM customers_services cs
+  RIGHT JOIN services s
+    ON cs.service_id = s.id
+  WHERE cs.customer_id IS NULL;

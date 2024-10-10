@@ -8,8 +8,10 @@
 --  Unix Hosting |     5
 -- (2 rows)
 
-SELECT services.description, count(*) FROM services
-  JOIN customers_services ON service_id = services.id
-  GROUP BY services.id
-  HAVING count(*) >= 3
-  ORDER BY services.description;
+SELECT s.description, count(*) FROM services s
+  JOIN customers_services cs
+    ON cs.service_id = s.id
+  JOIN customers c
+    ON c.id = cs.customer_id
+  GROUP BY s.id
+  HAVING count(*) > 2;
