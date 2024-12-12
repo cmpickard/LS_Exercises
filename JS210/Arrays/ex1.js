@@ -13,7 +13,7 @@ myArray = [1, 2];
 console.log(myArray);
 console.log(myOtherArray);
 
-/* 
+/*
 ANSWER:
 After the call to the pop method, it logs,
 [1, 2, 3]
@@ -28,7 +28,7 @@ variables that contain a pointer to our single array object
 
 But reassignment creates a brand new array object and points our variable
 at that new object. That reassignment has no effect on the other variable --
-viz. myOtherArray -- which continues to contain a pointer to the original 
+viz. myOtherArray -- which continues to contain a pointer to the original
 array.
 
 */
