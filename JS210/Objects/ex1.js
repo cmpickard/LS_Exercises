@@ -13,5 +13,8 @@
 // myObject.a;
 
 /* ANS
-
+  The attempt to access the value assigned to key 'a' on the second line using
+  bracket notation contains an error. When referring to keys inside bracket
+  notation, we need to use quotation marks to indicate that it's a string
+  literal and not a variable name.
 */
