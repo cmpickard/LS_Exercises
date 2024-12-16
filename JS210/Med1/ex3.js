@@ -19,3 +19,6 @@
 
 //   console.log(row);
 // }
+
+/* This outer for loop only iterates from i = 1 through i = 9, so we won't get
+a row for the multiples of 10. */

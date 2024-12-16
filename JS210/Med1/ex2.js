@@ -1,3 +1,4 @@
+/* eslint-disable id-length */
 // The following program is expected to log each number between 0 and 9
 // (inclusive) that is a multiple of 3. Read through the code shown below.
 // Will it produce the expected result? Why or why not?
