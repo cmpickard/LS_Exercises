@@ -1,7 +1,7 @@
 {
-  "name": "easy1",
+  "name": "ls_exercises",
   "version": "1.0.0",
-  "main": "ex1.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
