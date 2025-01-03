@@ -11,13 +11,13 @@
 // The total is $230.00
 
 function calcTip() {
-  let rlSync = require('readline-sync');
-  let bill = Number(rlSync.question('What is the bill?\n'));
-  let tipPercent = Number(rlSync.question('What is the tip percentage?\n'));
-  let tip = (bill * (tipPercent / 100));
-  let total = (bill + Number(tip));
-  console.log(`The tip is $${tip.toFixed(2)}.`);
-  console.log(`The total is $${total.toFixed(2)}.`);
+  const rlsync = require('readline-sync');
+  let bill = Number(rlsync.question('What is the bill?\n'));
+  let tipPercent = Number(rlsync.question('What is the tip percentage?\n'));
+  let tip = bill * (tipPercent / 100);
+  let total = tip + bill;
+  console.log(`The tip is $${tip}.00`);
+  console.log(`The total is $${total}.00`);
 }
 
 calcTip();

@@ -9,12 +9,8 @@
 // stringy(7);    // "1010101"
 
 function stringy(num) {
-  let result = '';
-  for (let counter = 1; counter <= num; counter++) {
-    result += (counter % 2 === 0 ? '0' : '1');
-  }
-
-  return result;
+  return '10'.repeat(num).slice(0, num);
 }
 
-console.log(stringy(9));
+console.log(stringy(6)); // "101010"
+console.log(stringy(9)); //"101010101"

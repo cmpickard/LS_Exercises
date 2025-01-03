@@ -1,4 +1,3 @@
-/* eslint-disable id-length */
 // Write a program that asks the user to enter an integer greater than 0, then
 // asks if the user wants to determine the sum or the product of all numbers
 // between 1 and the entered integer, inclusive.
@@ -16,32 +15,21 @@
 // The product of the integers between 1 and 6 is 720.
 let rlSync = require('readline-sync');
 
-function getOperation() {
-  let ans;
-  while (ans !== 's' && ans !== 'p') {
-    ans = rlSync.question('Enter "s" to compute the sum, "p" to compute the product\n');
-  }
-  return ans;
-}
-
 function makeCalc() {
-  let num = Number(rlSync.question('Please enter an integer greater than 0:\n'));
-  let operation = getOperation();
-
-  let result = (operation === 's' ? 0 : 1);
-  if (operation === 'p') {
-    for (let i = 1; i <= num; i++) {
-      result *= i;
-    }
-  } else {
-    for (let i = 1; i <= num; i++) {
-      result += i;
-    }
+  const num = Number(rlSync.question('Enter an integer greater than 0:\n'));
+  let choice = '';
+  while (!['s', 'p'].includes(choice)) {
+    choice = rlSync.question('Type "s" to compute sum, "p" for product.\n');
   }
 
-  operation = (operation === 's' ? 'sum' : 'product');
+  const operation = (choice === 's') ? 'sum' : 'product';
 
-  console.log(`The ${operation} of the integers between 1 and ${num} is ${result}`);
+  let ans = 1;
+  for (let currVal = 2; currVal <= num; currVal++) {
+    ans = (choice === 's') ? ans + currVal : ans * currVal;
+  }
+
+  console.log(`The ${operation} of the integers between 1 & ${num} is ${ans}`);
 }
 
 makeCalc();
@@ -53,14 +41,12 @@ makeCalc();
 // method?
 
 function computeSum(array) {
-  let sum = array.reduce(((acc, num) => acc + num), 0);
-  console.log(`The sum of the array is ${sum}`);
+  return array.reduce((num, acc) => num + acc, 0);
 }
 
 function computeProduct(array) {
-  let product = array.reduce(((acc, num) => acc * num), 1);
-  console.log(`The product of the array is ${product}`);
+  return array.reduce((num, acc) => num * acc, 1);
 }
 
-computeSum([1, 2, 3, 4]);
-computeProduct([1, 2, 3, 4]);
+console.log(computeSum([1, 2, 3, 4]));
+console.log(computeProduct([1, 2, 3, 4]));

@@ -12,14 +12,11 @@
 // crunch('');                           // ""
 
 function crunch(str) {
-  let result = '';
-  for (let idx = 0; idx < str.length; idx++) {
-    if (str[idx - 1] !== str[idx]) {
-      result += str[idx];
-    }
-  }
-
-  return result;
+  return Array.from(str)
+    .reduce((newString, currChar) => {
+      const previousChar = newString[newString.length - 1];
+      return (previousChar === currChar) ? newString : newString + currChar;
+    }, '');
 }
 
 console.log(crunch('ddaaiillyy ddoouubbllee'));
@@ -34,10 +31,7 @@ console.log(crunch(''));
 // any other solutions that don't use regular expressions?
 
 function crunchRegExp(str) {
-  let pattern = /(.)\1+/g;
-  return str.replaceAll(pattern, function(_, p1) {
-    return p1;
-  });
+  return str.replaceAll(/(.)\1+/g, "$1");
 }
 
 console.log(crunchRegExp('ddaaiillyy ddoouubbllee'));

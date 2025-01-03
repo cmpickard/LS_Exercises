@@ -33,8 +33,6 @@
 // JavaScript will take care of the rest.
 
 // Examples:
-
-// Copy Code
 // findFibonacciIndexByLength(2n) === 7n;    // 1 1 2 3 5 8 13
 // findFibonacciIndexByLength(3n) === 12n;   // 1 1 2 3 5 8 13 21 34 55 89 144
 // findFibonacciIndexByLength(10n) === 45n;
@@ -46,15 +44,16 @@
 // // The last example may take a minute or so to run.
 
 function findFibonacciIndexByLength(size) {
-  let fibs = [1, 1, 2, 3, 5, 8];
-  let currentFib = fibs.slice(-1);
+  let fibs = [1, 1];
 
-  while (String(currentFib).length < size) {
-    fibs.push(Number(fibs.slice(-1)) + Number(fibs.slice(-2, -1)));
-    currentFib = fibs.slice(-1);
+  while (true) {
+    let nextFib = fibs.slice(-1)[0] + fibs.slice(-2, -1)[0];
+    fibs.push(nextFib);
+
+    if (String(nextFib).length >= size) {
+      return BigInt(fibs.length);
+    }
   }
-
-  return BigInt(fibs.length);
 }
 
 console.log(findFibonacciIndexByLength(2n) === 7n);    // 1 1 2 3 5 8 13

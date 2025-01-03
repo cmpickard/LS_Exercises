@@ -1,10 +1,9 @@
-/* eslint-disable id-length */
 // Log all even numbers from 1 to 99, inclusive, to the console, with each
 // number on a separate line.
 
 function printEvens() {
-  for (let i = 2; i < 100; i += 2) {
-    console.log(i);
+  for (let count = 2; count < 99; count += 2) {
+    console.log(count);
   }
 }
 

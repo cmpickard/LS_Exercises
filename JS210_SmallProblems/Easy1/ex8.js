@@ -23,13 +23,8 @@
 // isLeapYear(400);       // true
 
 function isLeapYear(year) {
-  let julian = year < 1752;
-  if ((julian && year % 4 === 0) || (year % 4 === 0 && year % 100 !== 0) ||
-      year % 400 === 0) {
-    return true;
-  } else {
-    return false;
-  }
+  return !((year % 100 === 0 && year % 400 !== 0 && year > 1752) ||
+  year % 4 !== 0);
 }
 
 console.log(isLeapYear(2016));      // true

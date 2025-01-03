@@ -24,10 +24,7 @@
 // isLeapYear(400);       // true
 
 function isLeapYear(year) {
-  if (year % 400 === 0) return true;
-  if (year % 100 === 0) return false;
-  if (year % 4 === 0) return true;
-  return false;
+  return !((year % 100 === 0 && year % 400 !== 0) || year % 4 !== 0);
 }
 
 console.log(isLeapYear(2016));      // true
@@ -67,11 +64,19 @@ console.log(isLeapYear(400));       // true
 // than the original solution?
 
 function isLeapYear2(year) {
-  let leap = false;
-  if (year % 4 === 0) leap = true;
-  if (year % 100 === 0) leap = false;
-  if (year % 400 === 0) leap = true;
-  return leap;
+  if (year % 4 === 0) {
+    if (year % 100 === 0) {
+      if (year % 400 === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  } else {
+    return false;
+  }
 }
 
-isLeapYear2(400);
+console.log(isLeapYear2(400));

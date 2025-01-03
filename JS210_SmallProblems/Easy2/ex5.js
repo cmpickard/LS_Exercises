@@ -25,22 +25,11 @@
 //  ********
 // *********
 
-function repeat(num, char) {
-  let result = '';
-  for (let count = 1; count <= num; count++) {
-    result += char;
-  }
-
-  return result;
-}
-
-function triangle(size) {
-  for (let stars = 1; stars <= size; stars++) {
-    let spaces = size - stars;
-    console.log(repeat(spaces, ' ') + repeat(stars, '*'));
+function triangle(height) {
+  for (let line = 1; line <= height; line++) {
+    console.log(' '.repeat(height - line) + '*'.repeat(line));
   }
 }
-
 
 triangle(3);
 triangle(5);

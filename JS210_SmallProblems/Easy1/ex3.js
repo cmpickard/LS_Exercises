@@ -14,18 +14,15 @@
 // Enter the width of the room in meters:
 // 7
 // The area of the room is 70.00 square meters (753.47 square feet).
-const METERS_TO_FEET = 10.7639;
-const FEET_TO_METERS = METERS_TO_FEET ** -1;
+const M_TO_FT = 10.7639;
+const FT_TO_M = M_TO_FT ** -1;
 let rlSync = require('readline-sync');
 
 function calcArea() {
-  let len = Number(rlSync.question('Enter the length of the room in meters:\n'));
-  let width = Number(rlSync.question('Enter the width of the room in meters:\n'));
-  let area = Number((len * width).toFixed(2));
-  let areaInFeet = (area * METERS_TO_FEET).toFixed(2);
-
-  console.log(`The area of the room is ${area} square meters ` +
-    `(${areaInFeet} square feet.)`);
+  let length = Number(rlSync.question('Enter the length in meters:\n'));
+  let width = Number(rlSync.question('Enter the width in meters\n'));
+  let area = (length * width);
+  console.log(`The area if ${area.toFixed(2)} square meters`);
 }
 
 calcArea();
@@ -36,27 +33,24 @@ calcArea();
 // conversion in parentheses.
 
 function calcArea2() {
-  let units;
-  while (units !== 'm' && units !== 'f') {
-    units = rlSync.question('Are you giving values in (m)eters or (f)eet?');
-  }
-  units = (units === 'm' ? 'meters' : 'feet');
-  let len = Number(rlSync.question(`Enter the length of the room in ${units}:\n`));
-  let width = Number(rlSync.question(`Enter the width of the room in ${units}:\n`));
+  let response = '';
 
-  let areaMeters;
-  let areaFeet;
-
-  if (units === 'meters') {
-    areaMeters = Number((len * width).toFixed(2));
-    areaFeet = (areaMeters * METERS_TO_FEET).toFixed(2);
-  } else {
-    areaFeet = Number((len * width).toFixed(2));
-    areaMeters = (areaFeet * FEET_TO_METERS).toFixed(2);
+  while (!['m', 'f'].includes(response)) {
+    response = rlSync.question('Measurements in (m)eters or (f)eet?\n');
   }
 
-  console.log(`The area of the room is ${areaMeters} square meters ` +
-    `(${areaFeet} square feet.)`);
+  const units = (response === 'm' ? 'meters' : 'feet');
+
+  const length = Number(rlSync.question(`Enter the length in ${units}\n`));
+  const width = Number(rlSync.question(`Enter the width in ${units}\n`));
+  const area = (length * width).toFixed(2);
+
+  const altWidth = (units === 'meters') ? width * M_TO_FT : width * FT_TO_M;
+  const altLength = (units === 'meters') ? length * M_TO_FT : length * FT_TO_M;
+  const altArea = (altWidth * altLength).toFixed(2);
+  const altUnits = (units === 'meters') ? 'feet' : 'meters';
+
+  console.log(`The room is ${area} sq ${units}. (${altArea} sq ${altUnits})`);
 }
 
 calcArea2();

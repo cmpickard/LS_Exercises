@@ -1,10 +1,9 @@
-/* eslint-disable id-length */
 // Log all odd numbers from 1 to 99, inclusive, to the console,
 // with each number on a separate line.
 
 function printOdds() {
-  for (let i = 1; i < 100; i += 2) {
-    console.log(i);
+  for (let count = 1; count < 100; count += 2) {
+    console.log(count);
   }
 }
 
@@ -17,7 +16,7 @@ printOdds();
 
 function fancyPrintOdds(limit = 100) {
   let counter = 1;
-  while (counter < limit) {
+  while (counter <= limit) {
     console.log(counter);
     counter += 2;
   }

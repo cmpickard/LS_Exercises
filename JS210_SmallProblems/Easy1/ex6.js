@@ -10,8 +10,8 @@
 // shortLongShort('', 'xyz');         // "xyz"
 
 function shortLongShort(str1, str2) {
-  let [short, long] = (str1.length > str2.length ? [str2, str1] : [str1, str2]);
-  return short + long + short;
+  if (str1.length > str2.length) [str1, str2] = [str2, str1];
+  return str1 + str2 + str1;
 }
 
 console.log(shortLongShort('abc', 'defgh'));

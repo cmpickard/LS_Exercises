@@ -19,12 +19,7 @@
 // utf16Value(OMEGA + OMEGA + OMEGA);  // 2811
 
 function utf16Value(string = '') {
-  let sum = 0;
-  for (let idx = 0; idx < string.length; idx++) {
-    sum += string[idx].charCodeAt();
-  }
-
-  return sum;
+  return Array.from(string).reduce((acc, char) => acc + char.charCodeAt(0), 0);
 }
 
 console.log(utf16Value('Four score'));
