@@ -20,15 +20,14 @@ const DIGITS =  { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
   '8': 8, '9':9, '0': 0, '-': 0, '+': 0};
 
 function stringToSignedInteger(strInt) {
-  let positive = !(strInt[0] === '-');
-  let numArr = strInt.split('').map( (strNum) => DIGITS[strNum]);
-  let result = 0;
-  for (let idx = 0; idx < numArr.length; idx++) {
-    result = (10 * result) + numArr[idx];
-  }
+  let positive = (strInt[0] !== '-');
+  strInt.replace(/[-+]/, '');
 
-  if (!positive) result *= -1;
-  return result;
+  let result = Array.from(strInt).reverse().reduce((acc, char, idx) => {
+    return acc + (DIGITS[char] * (10 ** idx));
+  }, 0);
+
+  return result * (positive ? 1 : -1);
 }
 
 console.log(stringToSignedInteger('4321'));

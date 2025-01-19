@@ -6,15 +6,10 @@
 // It should return a new string or array.
 
 function reverse(value) {
-  let reversed = [];
-  let isArray = Array.isArray(value);
-  value = isArray ? value : value.split('');
-
-  for (let i = value.length - 1; i >= 0; i--) {
-    reversed.push(value[i]);
+  let reversed = (typeof value === 'string') ? '' : [];
+  for (let idx = value.length - 1; idx >= 0; idx--) {
+    reversed = reversed.concat(value[idx]);
   }
-
-  reversed = isArray ? reversed : reversed.join('')
 
   return reversed;
 }
@@ -29,31 +24,29 @@ console.log(reverse(array));             // [3, 2, 1]
 console.log(array);                      // [1, 2, 3]
 
 /* FURTHER EXPLORATION
-Why doesn't this code work?
+Why doesn't this code work? */
 
-function reverse(inputForReversal) {
-  if (Array.isArray(inputForReversal)) {
-    return reverseArray(inputForReversal);
-  } else {
-    return reverseString(inputForReversal);
-  }
-}
+// FIXED:
+// function reverse(inputForReversal) {
+//   if (Array.isArray(inputForReversal)) {
+//     return reverseArray(inputForReversal);
+//   } else {
+//     return reverseString(inputForReversal);
+//   }
+// }
 
-function reverseArray(inputForReversal) {
-  const reversed = [];
-  const length = inputForReversal.length;
+// function reverseArray(inputForReversal) {
+//   const reversed = [];
+//   const length = inputForReversal.length;
 
-  for (let i = 0; i < length; i += 1) {
-    reversed[length - i] = inputForReversal[i];  //should be, [length - (i + 1)] 
-  }
+//   for (let idx = 0; idx < length; idx += 1) {
+//     reversed[length - idx - 1] = inputForReversal[idx];
+//   }
 
-  return reversed;
-}
+//   return reversed;
+// }
 
-function reverseString(inputForReversal) {
-  const stringArray = inputForReversal.split(' '); //should be, split('')
-  return reverseArray(stringArray).join(' '); //should be, join('')
-}
-
-
-*/
+// function reverseString(inputForReversal) {
+//   const stringArray = inputForReversal.split('');
+//   return reverseArray(stringArray).join('');
+// }

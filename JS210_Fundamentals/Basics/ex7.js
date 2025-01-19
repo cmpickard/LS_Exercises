@@ -14,18 +14,13 @@
 // stringToInteger('4321');      // 4321
 // stringToInteger('570');       // 570
 
-const STRINGS_TO_NUMS = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7,
+const STRINGS_NUMS = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7,
   8: 8, 9:9, 0: 0};
 
 function stringToInteger(strNum) {
-  let strArr = strNum.split('').reverse();
-  let result = STRINGS_TO_NUMS[strArr[0]];
-
-  for (let idx = 1; idx < strArr.length; idx++) {
-    result += (STRINGS_TO_NUMS[strArr[idx]] * (10 ** idx));
-  }
-
-  return result;
+  return Array.from(strNum)
+    .reverse()
+    .reduce((acc, char, idx) => acc + (STRINGS_NUMS[char] * (10 ** idx)), 0);
 }
 
 console.log(stringToInteger('4321'));

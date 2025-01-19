@@ -48,14 +48,11 @@ const MINS_PER_HOUR = 60;
 const HOURS_PER_DAY = 24;
 const MINS_PER_DAY = MINS_PER_HOUR * HOURS_PER_DAY;
 
-function afterMidnight(timeStr) {
-  let time = new Date(`January 1, 2000 ${timeStr}:00`);
-  return (time.getHours() * MINS_PER_HOUR) + time.getMinutes();
+afterMidnight(timeStr) {
 }
 
 function beforeMidnight(timeStr) {
-  let finalMins = MINS_PER_DAY - afterMidnight(timeStr);
-  return (finalMins === MINS_PER_DAY ? 0 : finalMins);
+
 }
 
 console.log(afterMidnight('02:02'));

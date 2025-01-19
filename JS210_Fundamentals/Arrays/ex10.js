@@ -11,16 +11,21 @@
 //   // ...
 // }
 
+function specialSort(a, b) {
+  // eslint-disable-next-line eqeqeq
+  if (a == b && a !== b) {
+    return (typeof a === 'string' ? 1 : -1);
+  } else {
+    return Number.isNaN(a - b) ? a.codePointAt(0) - b.codePointAt(0) : a - b;
+  }
+}
 
 function areArraysEqual(arr1, arr2) {
   if (arr1.length !== arr2.length) return false;
-
-  let arr2Copy = arr2.slice();
-
-  for (let idx = 0; idx < arr1.length; idx++) {
-    let secondIdx = arr2Copy.indexOf(copy1[idx]);
-    if (secondIdx === -1) return false;
-    delete arr2Copy[secondIdx];
+  let sort1 = arr1.toSorted((a, b) => specialSort(a, b));
+  let sort2 = arr2.toSorted((a, b) => specialSort(a, b));
+  for (let idx = 0; idx < sort1.length; idx++) {
+    if (sort1[idx] !== sort2[idx]) return false;
   }
 
   return true;

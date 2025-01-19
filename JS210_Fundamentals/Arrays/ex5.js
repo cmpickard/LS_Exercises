@@ -6,60 +6,54 @@
 
 // pop
 function pop(arr) {
-  let lastElement = arr[arr.length - 1];
-  if (lastElement !== undefined) arr.length = arr.length - 1;
-
-  return lastElement;
+  if (arr.length === 0) return undefined;
+  let last = arr.slice(-1)[0];
+  arr.length -= 1;
+  return last;
 }
 
 const array1 = [1, 2, 3];
-console.log(pop(array1));                        // 3
-console.log(array1);                // [1, 2]
+console.log(pop(array1));                       // 3
+console.log(array1);                            // [1, 2]
 console.log(pop([]));                           // undefined
 console.log(pop([1, 2, ['a', 'b', 'c']]));      // ["a", "b", "c"]
 
 
 // push
-
 function push(arr, ...vals) {
-  let indexCounter = arr.length;
-
-  for (let i = 0; i < vals.length; i++) {
-    arr[indexCounter] = vals[i];
-    indexCounter += 1;
+  for (let element of vals) {
+    arr[arr.length] = element;
   }
 
   return arr.length;
 }
 
 const array2 = [1, 2, 3];
-console.log(push(array2, 4, 5, 6));              // 6
-console.log(array2);                // [1, 2, 3, 4, 5, 6]
+console.log(push(array2, 4, 5, 6));             // 6
+console.log(array2);                            // [1, 2, 3, 4, 5, 6]
 console.log(push([1, 2], ['a', 'b']));          // 3
 console.log(push([], 1));                       // 1
-console.log(push([]));                          // 0                        
+console.log(push([]));                          // 0
 
-/* FURTHER EXPLORATION 
+/* FURTHER EXPLORATION
 
-Why doesn't this solution worK?
+Why doesn't this solution worK? */
 
-function pop(array) {
-  const poppedElement = array[array.length];        // should be length - 1
-  array.splice[array.length];                       // should be length - 1
+// function pop(array) {
+//   const poppedElement = array[array.length - 1];      // should be length - 1
+//   // eslint-disable-next-line no-unused-expressions
+//   array.splice(array.length - 1);                     // should be length - 2
 
-  return poppedElement;
-}
+//   return poppedElement;
+// }
 
-function push(array, ...args) {
-  const length = args.length;
+// function push(array, ...args) {
+//   const length = args.length;
+//   let counter = 0;
+//   for (let idx = length; idx < (length + args.length); idx += 1) {
+//     array[idx] = args[counter];
+//     counter += 1;
+//   }
 
-  for (let i = 1; i < length; i += 1) {  // should start at 0, not 1
-    array[i] = args[i];                // should be, array[length + i] = args[i]
-  }
-
-  return array.length;
-}
-
-ANSWER:
-
-*/
+//   return array.length;
+// }

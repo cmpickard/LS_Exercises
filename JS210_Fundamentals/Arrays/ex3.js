@@ -1,6 +1,6 @@
 // In this exercise, you will learn more about Arrays by implementing your own
 // version of the Array.prototype.concat method. Write a function that returns
-// a new array composed of all values from the first array argument and the second
+// a new array composed of all values from the first array argument / the second
 // array or value argument. Take note of the following specifications when
 // writing your concat function.
 
@@ -37,18 +37,17 @@
 // const arr3 = concat(arr1, arr2);
 // arr3;                                  // [1, 2, 3, 4, 5, { a: "two", b: 3 }]
 // obj.b = 'three';
-// arr3;                                  // [1, 2, 3, 4, 5, { a: "two", b: "three" }]
+// arr3;                            // [1, 2, 3, 4, 5, { a: "two", b: "three" }]
 
 // arr3[5].b = 3;                         // or, `arr3[5]['b'] = 3;`
 // obj;                                   // { a: "two", b: 3 }
 
 function concat(arr, second) {
-  const isArr = (Array.isArray(second)) ? true : false;
   let newArr = arr.slice();
-  
-  if (isArr) {
-    for (let i = 0; i < second.length; i++) {
-      newArr.push(second[i]);
+
+  if (Array.isArray(second)) {
+    for (let element of second) {
+      newArr.push(element);
     }
   } else {
     newArr.push(second);
@@ -75,5 +74,5 @@ console.log(arr3);                                  // [1, 2, 3, 4, 5, { a: "two
 obj.b = 'three';
 console.log(arr3);                                  // [1, 2, 3, 4, 5, { a: "two", b: "three" }]
 
-arr3[5].b = 3;                         // or, `arr3[5]['b'] = 3;`
+arr3[5].b = 3;
 console.log(obj);                                   // { a: "two", b: 3 }

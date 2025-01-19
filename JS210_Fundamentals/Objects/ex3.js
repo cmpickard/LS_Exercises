@@ -24,8 +24,8 @@
 
   The first for... loop iterates through every element of arr1, pushing the val
   into arr2. Because all of arr1's elements are strings and since strings are
-  primitive values in JS, this effectively makes arr2 a copy of arr1 -- holding
-  a copy of the exact same values but not actually sharing any references.
+  primitive values in JS, this effectively makes arr2 hold a copy of the exact
+  same values as arr1 but not actually share any references.
 
   Thus, when the second for... loop iterates again through arr1 and replaces
   all the elements that start with a 'c' character to be upper case, there is

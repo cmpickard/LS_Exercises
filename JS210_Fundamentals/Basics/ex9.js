@@ -22,14 +22,12 @@
 const NUMERALS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 function integerToString(int) {
-  let resultArr = [];
-
-  do {
-    resultArr.push(NUMERALS[int % 10]);
-    int = Math.floor(int / 10);
-  } while (int > 0);
-
-  return resultArr.reverse().join('');
+  if (int < 10) {
+    return NUMERALS[int];
+  } else {
+    return integerToString(Math.floor(int / 10)) + NUMERALS[int % 10];
+  }
 }
 
 console.log(integerToString(4321));
+console.log(integerToString(12));

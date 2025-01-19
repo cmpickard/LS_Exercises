@@ -12,15 +12,13 @@
 function concat(arr, ...additions) {
   let newArr = arr.slice();
 
-  for (let i = 0; i < additions.length; i++) {
-    let currentVal = additions[i];
-    let isArray = Array.isArray(currentVal) ? true : false;
-    if (isArray) {
-      for (let j = 0; j < currentVal.length; j++) {
-        newArr.push(currentVal[j]);
+  for (let addition of additions) {
+    if (Array.isArray(addition)) {
+      for (let element of addition) {
+        newArr.push(element);
       }
     } else {
-      newArr.push(currentVal);
+      newArr.push(addition);
     }
   }
 

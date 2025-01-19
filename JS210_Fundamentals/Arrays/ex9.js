@@ -1,14 +1,16 @@
 // The oddities function takes an array as an argument and returns a new array
-// containing every other element from the input array. The values in the returned
+// containing every other element from the input array. The values in the
+// returned
 // array are the first (index 0), third, fifth, and so on, elements of the input
 // array. The program below uses the array returned by oddities as part of a
 // comparison. Can you explain the results of these comparisons?
 
+// eslint-disable-next-line no-unused-vars
 function oddities(array) {
   const oddElements = [];
 
-  for (let i = 0; i < array.length; i += 2) {
-    oddElements.push(array[i]);
+  for (let idx = 0; idx < array.length; idx += 2) {
+    oddElements.push(array[idx]);
   }
 
   return oddElements;

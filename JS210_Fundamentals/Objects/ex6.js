@@ -24,7 +24,7 @@
   second-to-last elements of the array, but they are acutally creating to new
   non-element propertiesw on the myArray object.
 
-  This ends up matter later in our for loop inside the call to the average
+  This ends up mattering later in our for loop inside the call to the average
   function. There, we iterate from -2 to 2 and use bracket notation to grab
   elements at those indices in the array object assigned to the variable array.
   However, -2 and -1 are not valid indices and so what actually happens on those

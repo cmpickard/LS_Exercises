@@ -11,16 +11,18 @@
 // elements and/or adding new elements. The function takes the following
 // arguments: an array, a start index, a deleteCount, and zero or more elements
 // to be added. The function removes deleteCount number of elements from the
-// array, beginning at the start index. If any optional element arguments are 
+// array, beginning at the start index. If any optional element arguments are
 // provided, splice inserts them into the array beginning at the start index.
 // The function returns a new array containing the deleted elements, or an
-// empty array ([]) if no elements are deleted. splice mutates the original array.
+// empty array ([]) if no elements are deleted. splice mutates the original
+// array.
 
 // Additional specifications:
 
 // slice:
 
-// The values of begin and end will always be integers greater than or equal to 0.
+// The values of begin and end will always be integers greater than or equal to
+// 0.
 // If the value of begin or end is greater than the length of the array, set
 // it to equal the length.
 
@@ -38,51 +40,33 @@
 // removes elements from the array.
 
 function slice(arr, begin, end) {
-  begin = begin > arr.length ? arr.length : begin;
-  end = end > arr.length ? arr.length : end;
+  if (begin > arr.length) begin = arr.length;
+  if (end > arr.length) end = arr.length;
 
   let newArr = [];
-  let indexCounter = 0;
-
-  for (let i = begin; i < end; i++) {
-    newArr[indexCounter] = arr[i];
-    indexCounter += 1;
+  for (let idx = begin; idx < end; idx++ ) {
+    newArr.push(arr[idx]);
   }
 
   return newArr;
 }
 
 function splice(arr, start, deleteCount, ...args) {
-  start = start > arr.length ? arr.length : start;
-  let originalLength = arr.length;
-  let deleteables = arr.length - start;
-  deleteCount = (deleteCount > deleteables) ? deleteables: deleteCount;
-
-  let deletions = [];
-
-  for (let idx = start; idx < start + deleteCount; idx++) {
-    deletions.push(arr[idx]);
+  if (start > arr.length) start = arr.length;
+  if (deleteCount > arr.slice(start).length) {
+    deleteCount = arr.slice(start).length;
   }
 
-  let postSlice = [];
+  let removed = arr.slice(start, start + deleteCount);
+  let endArray = args.concat(arr.slice(start + deleteCount));
+  let count = 0;
 
-  for (let idx = (start + deleteCount); idx < arr.length; idx++) {
-    postSlice.push(arr[idx]);
+  for (let idx = start; idx < (start + endArray.length); idx++) {
+    arr[idx] = endArray[count];
+    count += 1;
   }
 
-  postSlice = args.concat(postSlice);
-  let counter = 0;
-
-  for (let idx = start; idx < (start + postSlice.length); idx++) {
-    arr[idx] = postSlice[counter];
-    counter += 1;
-  }
-
-  if (arr.length !== 0) {
-    arr.length = (originalLength + (args.length - deleteCount));
-  }
-
-  return deletions;
+  return removed;
 }
 
 console.log(slice([1, 2, 3], 1, 2));               // [2]

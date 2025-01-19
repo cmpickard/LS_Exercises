@@ -8,25 +8,24 @@
 // of the array. Both methods mutate the original array.
 
 function shift(array) {
-  let element = array[0];
+  if (array.length === 0) return undefined;
+  const element = array[0];
 
-  for (let i = 0; i < array.length; i++) {
-    array[i] = array[i + 1];
+  for (let idx = 1; idx < array.length; idx++) {
+    array[idx - 1] = array[idx];
   }
+  array.length -= 1;
 
-  array.length = array.length === 0 ? 0 : array.length - 1;
   return element;
 }
 
 function unshift(array, ...values) {
-  let additions = values.length;
+  for (let element of values) {
+    for (let idx = array.length; idx > 0; idx--) {
+      array[idx] = array[idx - 1];
+    }
 
-  for (let i = array.length - 1; i >= 0; i--) {
-    array[i + additions] = array[i];
-  }
-
-  for (let i = 0; i < additions; i++) {
-    array[i] = values[i];
+    array[0] = element;
   }
 
   return array.length;

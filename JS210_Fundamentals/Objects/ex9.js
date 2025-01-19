@@ -16,7 +16,6 @@
 // timeOfDay(-4231);      // "01:29"
 // Note: Disregard Daylight Saving Time, Standard Time, and other complications.
 
-// Copy Code
 // const MINUTES_PER_HOUR = 60;
 // const HOURS_PER_DAY = 24;
 // const MINUTES_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR;
@@ -44,21 +43,18 @@
 // }
 
 function padWithZeroes(time, length) {
-  let timeString = String(time);
-
-  while (timeString.length < length) {
-    timeString = '0' + timeString;
-  }
-
-  return timeString;
+  let zeroes = length > String(time).length;
+  return (zeroes > 0) ? Array(zeroes).fill('0').join('') + time : time;
 }
 
 function timeOfDay(deltaMinutes) {
-  let endTime = new Date(Date.UTC(0, 0, 0, 0, deltaMinutes));
-  let hours = endTime.getUTCHours();
-  let mins = endTime.getUTCMinutes();
-
-  return (`${padWithZeroes(hours, 2)}:${padWithZeroes(mins, 2)}`);
+  let time = new Date('January 1, 2000');
+  time.setMinutes(deltaMinutes);
+  let hours = padWithZeroes(time.getHours(), 2);
+  let mins = padWithZeroes(time.getMinutes(), 2);
+  return hours + ':' + mins;
 }
 
-console.log(timeOfDay(126));
+console.log(timeOfDay(126)); // 02:06
+console.log(timeOfDay(-4231)); // 01:29
+console.log(timeOfDay(800)); // 13:20

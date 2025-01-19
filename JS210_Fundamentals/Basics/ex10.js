@@ -17,19 +17,23 @@
 const NUMERALS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 function signedIntegerToString(int) {
-  let result = '';
   let negative = (int < 0 || Object.is(int, -0));
-  int = Math.abs(int);
+  int *= negative ? -1 : 1;
 
+  let result = [];
   do {
-    result = NUMERALS[int % 10] + result;
-    int = Math.floor(int / 10);
+    result.push(NUMERALS[int % 10]);
+    int = Math.trunc(int / 10);
   } while (int > 0);
 
-  return (negative ? '-' + result : result);
+  let sign = negative ? '-' : '+';
+  result = result.reverse().join('');
+  result = (int === 0 && !negative) ? result : sign + result;
+
+  return result;
 }
 
 console.log(signedIntegerToString(4321));
 console.log(signedIntegerToString(-123));
 console.log(signedIntegerToString(0));
-console.log(signedIntegerToString(-0) === "-0");
+console.log(signedIntegerToString(-0));

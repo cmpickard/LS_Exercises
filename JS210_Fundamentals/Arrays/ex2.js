@@ -8,13 +8,12 @@ let myArray = [1, 2, 3, 4];
 let myOtherArray;
 
 /* OPTION 1 */
-myOtherArray = myArray.concat([]);
-
-/* OPTION 2 */
-for (i = 0; i < myArray.length; i++) {
-  myOtherArray[i] = myArray[i];
+for (let element of myArray) {
+  myOtherArray.push(element);
 }
 
-/* OPTION 3 */
+/* OPTION 2 */
+myOtherArray = myArray.slice(0);
 
-myOtherArray = myArray.slice();
+/* OPTION 3 */
+myOtherArray = myArray.split('').join('');

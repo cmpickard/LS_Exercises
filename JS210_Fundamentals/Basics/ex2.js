@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 const myBoolean = true;
 const myString = 'hello';
 const myArray = [];
@@ -19,7 +20,7 @@ if (myOtherString || myArray) {
   console.log('!');
 }
 
-// Go over the following program. What does it log to the console at lines 7, 11,
+// Go over the following program. What does it log to the console at lines 7, 11
 // 15, and 19? Is it what you expected? Why or why not?
 
 /* ANS
