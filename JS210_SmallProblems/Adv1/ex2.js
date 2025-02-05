@@ -36,6 +36,7 @@
 // 1  4  3
 // 5  7  9
 // 8  2  6
+
 // Write a function that takes an array of arrays that represents a 3x3 matrix
 // and returns the transpose of the matrix. You should implement the function
 // on your own, without using any external libraries.
@@ -56,3 +57,26 @@
 
 // console.log(newMatrix);      // [[1, 4, 3], [5, 7, 9], [8, 2, 6]]
 // console.log(matrix);         // [[1, 5, 8], [4, 7, 2], [3, 9, 6]]
+
+function transpose(matrix) {
+  let result = Array(matrix.length).fill(null).map((_) => []);
+
+  matrix.forEach((subArr, row) => {
+    subArr.forEach((element, col) => {
+      result[col][row] = element;
+    });
+  });
+
+  return result;
+}
+
+const matrix = [
+  [1, 5, 8],
+  [4, 7, 2],
+  [3, 9, 6]
+];
+
+const newMatrix = transpose(matrix);
+
+console.log(newMatrix);      // [[1, 4, 3], [5, 7, 9], [8, 2, 6]]
+console.log(matrix);         // [[1, 5, 8], [4, 7, 2], [3, 9, 6]]
