@@ -21,19 +21,13 @@ const numWords = {
 };
 
 function wordToDigit(text) {
-  let words = text.split(' ').map(word => {
-    let wordPart = word.replace(/[^A-Za-z]/g, '');
-    let index = Object.keys(numWords).indexOf(wordPart);
-
-    if (index !== -1) {
-      return word.replace(wordPart, numWords[wordPart]);
-    } else {
-      return word;
-    }
-  });
-
-  return words.join(' ');
+  for (let numWord in numWords) {
+    let pattern = new RegExp(`${numWord}`, 'gi');
+    text = text.replace(pattern, numWords[numWord]);
+  }
+  return text;
 }
+
 
 console.log(wordToDigit('Please call me at five five five one two three four.'));
 // // "Please call me at 5 5 5 1 2 3 4."

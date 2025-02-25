@@ -7,20 +7,13 @@
 // swapCase('Tonight on XYZ-TV');      // "tONIGHT ON xyz-tv"
 
 function swapCase(str) {
-  const UPPERS = /[A-Z]/;
-  const LOWERS = /[a-z]/;
-
-  let alteredChars = [...str].map(char => {
-    if (UPPERS.test(char)) {
+  return [...str].map(char => {
+    if (char.toUpperCase() === char) {
       return char.toLowerCase();
-    } else if (LOWERS.test(char)) {
-      return char.toUpperCase();
     } else {
-      return char;
+      return char.toUpperCase();
     }
-  });
-
-  return alteredChars.join('');
+  }).join('');
 }
 
 console.log(swapCase('CamelCase'));

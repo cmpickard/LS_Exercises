@@ -8,9 +8,7 @@
 // sum(123456789);    // 45
 
 function sum(num) {
-  return Array.from(String(num))
-    .map(digit => Number(digit))
-    .reduce((sum, digit) => sum + digit);
+  return [...String(num)].reduce((sum, num) => sum + Number(num), 0);
 }
 
 console.log(sum(23));

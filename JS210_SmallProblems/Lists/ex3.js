@@ -9,17 +9,11 @@
 // multiplyAllPairs([2, 4], [4, 3, 1, 2]);    // [2, 4, 4, 6, 8, 8, 12, 16]
 
 function multiplyAllPairs(arr1, arr2) {
-  let result = arr1.reduce((products, num1) => {
-    let innerProducts = [];
-    for (let idx = 0; idx < arr2.length; idx++) {
-      innerProducts.push(num1 * arr2[idx]);
-    }
-
-    products.push(innerProducts);
-    return products;
+  let products = arr1.reduce((products, num1) => {
+    return products.concat(arr2.map(num2 => num1 * num2));
   }, []);
 
-  return result.flat().sort((a, b) => a - b);
+  return products.sort((a, b) => a - b);
 }
 
 console.log(multiplyAllPairs([2, 4], [4, 3, 1, 2]));

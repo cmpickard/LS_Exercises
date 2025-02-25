@@ -22,7 +22,16 @@ function sumOfSums(nums) {
   return sum;
 }
 
+function sumOfSums2(nums) {
+  return nums.reduce((sum, num, idx) => sum + (num * (nums.length - idx)), 0);
+}
+
 console.log(sumOfSums([3, 5, 2]));
 console.log(sumOfSums([1, 5, 7, 3]));
 console.log(sumOfSums([4]));
 console.log(sumOfSums([1, 2, 3, 4, 5]));
+
+console.log(sumOfSums2([3, 5, 2]));
+console.log(sumOfSums2([1, 5, 7, 3]));
+console.log(sumOfSums2([4]));
+console.log(sumOfSums2([1, 2, 3, 4, 5]));
