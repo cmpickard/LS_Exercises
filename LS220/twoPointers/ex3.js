@@ -78,21 +78,21 @@ console.log(twoSumLessThanTarget([7, 4, 15, 11, 21, 9], 24) === 22);
 
 // start/end pointers
 function twoSumLessThanTarget2(nums, target) {
-  nums.sort((a,b) => a - b);
-  let currentMax = -1;
+  nums.sort((a, b) => a - b);
   let start = 0;
   let end = nums.length - 1;
+  let maxSum = -1;
   while (start < end) {
     let sum = nums[start] + nums[end];
     if (sum >= target) {
       end -= 1;
     } else {
-      if (currentMax < sum) currentMax = sum;
       start += 1;
+      if (maxSum < sum) maxSum = sum;
     }
   }
 
-  return currentMax;
+  return maxSum;
 }
 
 // Now do it with start / end pointers:

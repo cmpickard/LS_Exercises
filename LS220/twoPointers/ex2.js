@@ -33,16 +33,12 @@ result = []
 
 */
 
-function average(arr) {
-  return arr.reduce((sum, num) => sum + num) / arr.length;
-}
-
 function findAverages(nums, size) {
   let result = [];
   let start = 0;
-  let end = start + size;
+  let end = size;
   while (end <= nums.length) {
-    result.push(average(nums.slice(start, end)));
+    result.push(nums.slice(start, end).reduce((acc, sum) => acc + sum) / size);
     start += 1;
     end += 1;
   }

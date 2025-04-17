@@ -37,14 +37,13 @@ function countPairs(nums, target) {
   let start = 0;
   let end = nums.length - 1;
   let count = 0;
-
   while (start < end) {
     let sum = nums[start] + nums[end];
-    if (sum <= target) {
-      start += 1;
-    } else {
-      count += end - start;
+    if (sum > target) {
+      count += nums.slice(start, end).length;
       end -= 1;
+    } else {
+      start += 1;
     }
   }
 

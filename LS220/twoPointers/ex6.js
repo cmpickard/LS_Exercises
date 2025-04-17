@@ -42,16 +42,15 @@ return false
 function checkTripleMatch(nums) {
   let anchor = 0;
   let runner = 1;
-
   while (runner < nums.length) {
-    let tripleDiff = (nums[anchor] * 3) - nums[runner];
-    if (tripleDiff === 0) {
+    let triple = nums[anchor] * 3;
+    if (triple === nums[runner]) {
       return true;
-    } else if (tripleDiff > 0) {
-      runner += 1;
-    } else {
+    } else if (triple < nums[runner]) {
       anchor += 1;
-      if (anchor === runner) runner += 1; // in case there can be negative nums
+      if (runner === anchor) runner += 1;
+    } else {
+      runner += 1;
     }
   }
 

@@ -26,22 +26,22 @@
   retuen words.join(' ')
 */
 
-function reverseWords(str) {
-  let words = str.split(' ');
-  let reversed = words.map((word) => {
+function reverseWords(string) {
+  let words = string.split(' ');
+  return words.map((word) => {
     let chars = [...word];
     let start = 0;
-    let end = word.length - 1;
+    let end = chars.length - 1;
     while (start < end) {
       [chars[start], chars[end]] = [chars[end], chars[start]];
       start += 1;
       end -= 1;
     }
-    return chars.join('');
-  });
 
-  return reversed.join(' ');
+    return chars.join('');
+  }).join(' ');
 }
+
 
 console.log(reverseWords("Hello World") === "olleH dlroW");
 console.log(reverseWords("JavaScript is fun") === "tpircSavaJ si nuf");

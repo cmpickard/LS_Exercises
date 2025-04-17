@@ -42,19 +42,18 @@ while (currentAppetiteIdx < appetites.length)
 */
 
 function assignTreats(appetites, treats) {
-  appetites.sort((a,b) => a - b);
+  appetites.sort((a, b) => a - b);
   treats.sort((a, b) => a - b);
-
-  let appIdx = 0;
-  let treatIdx = 0;
+  let anchor = 0;
+  let runner = 0;
   let count = 0;
 
-  while (treatIdx < treats.length) {
-    if (appetites[appIdx] <= treats[treatIdx]) {
+  while (runner < treats.length) {
+    if (appetites[anchor] <= treats[runner]) {
       count += 1;
-      appIdx += 1;
+      anchor += 1;
     }
-    treatIdx += 1;
+    runner += 1;
   }
 
   return count;
