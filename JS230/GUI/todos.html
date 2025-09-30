@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>todo app</title>
+  <style>
+    li {
+      padding-top: 10px;
+    }
+
+    a {
+      padding-left: 5px;
+    }
+
+    .hidden {
+      visibility: hidden;
+    }
+  
+    #yes, #no, #delete-text {
+      opacity: 1;
+      font-size: large;
+      font-weight: bolder;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+    }
+
+    .visible {
+      visibility: visible;
+      background-color: black;
+      opacity: .90;
+      color: white;
+      position: absolute;
+      inset-inline-start: 20px;
+      inset-block-start: 20px;
+      padding: 50px;
+    }
+
+  </style>
+  <script>
+    let todoItems = [
+      {id: 1, title: 'Homework'},
+      {id: 2, title: 'Shopping'},
+      {id: 3, title: 'Calling Mom'},
+      {id: 4, title: 'Coffee with Elphaba'},
+    ];
+
+    function addTodos() {
+      let ul = document.getElementById('todo-list');
+      todoItems.forEach(item => {
+        let listItem = document.createElement('li');
+        listItem.classList.add('todo');
+        listItem.id = item.id;
+        listItem.textContent = item.title;
+
+        let deleteAnchor = document.createElement('a');
+        deleteAnchor.textContent = 'Delete';
+        deleteAnchor.classList.add('delete-todo');
+        deleteAnchor.setAttribute('href', '#');
+        listItem.appendChild(deleteAnchor);
+        ul.appendChild(listItem);
+      });
+    }
+
+    function bringUpDialog(dialog) {
+      let id = dialog.dataset.todoId;
+      let todo = document.getElementById(id).firstChild.textContent;
+      let textPrompt = document.getElementById('delete-text');
+      textPrompt.textContent = `Are you sure you want to delete ${todo}?`;
+      dialog.classList.remove('hidden');
+      dialog.classList.add('visible');
+    }
+
+    function hide(element) {
+      element.classList.remove('visible');
+      element.classList.add('hidden');
+    }
+
+    function removeTodo(dialog) {
+      let id = dialog.dataset.todoId;
+      document.getElementById(id).remove();
+      todoItems = todoItems.filter(todo => todo.id !== id);
+      dialog.dataset.todoId = null;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let ul = document.getElementById('todo-list');
+      let dialog = document.getElementById('dialog-box');
+      let context = document.getElementById('context-menu');
+      addTodos();
+
+      document.addEventListener('click', (event) => {
+        event.preventDefault();
+        let target = event.target;
+  
+        if (dialog.classList.contains('visible')) {
+          if (target === document.getElementById('yes')) removeTodo(dialog);
+
+          hide(dialog);        
+        } else if (target.classList.contains('delete-todo')) {
+          let currId = target.parentNode.id;
+          dialog.dataset.todoId = currId;
+          bringUpDialog(dialog);
+        } else if (context.classList.contains('visible')) { 
+          if (target.id === 'context-delete') {
+            let currId = context.dataset.todoId;
+            context.dataset.todoId = null;
+            dialog.dataset.todoId = currId;
+            bringUpDialog(dialog)
+          }
+
+          hide(context);
+        }
+      });
+
+      document.addEventListener('contextmenu', (event) => {
+        let target = event.target;
+        if (!target.classList.contains('todo')) return;
+        
+        event.preventDefault();
+        let context = document.getElementById('context-menu');
+        context.dataset.todoId = target.id;
+        context.classList.remove('hidden');
+        context.classList.add('visible');
+      })
+    })
+  </script>
+</head>
+<body>
+  <h1>TO-DOs</h1>
+  <ul id="todo-list"></ul>
+  <div id="dialog-box" class="hidden">
+    <p id="delete-text"></p>
+    <a id="yes" href="#">Yes</a>
+    <a id="no" href="#">No</a>
+  </div>
+  <div id="context-menu" class="hidden">
+    <a href="#">Show Details</a>
+    <a href="#">Edit Todo</a>
+    <a href="#" id="context-delete">Delete Todo</a>
+  </div>
+</body>
+</html>
+
+<!-- 
+STEP 1:
+Create a list of todos in the DOM from a JavaScript collection (array) of todos.
+Add a delete button for each todo.
+When the user clicks the delete button, a comfirmation prompt appears asking the user to confirm the deletion.
+Use CSS to display the comfirmation prompt.
+The comfirmation prompt has "Yes" and "No" buttons.
+The prompt should include the title of the todo being deleted.
+When the user clicks the "Yes" button, the comfirmation prompt disappears, and the corresponding todo is deleted.
+When the user clicks the "No" button, the comfirmation prompt disappears, and the todo is not deleted.
+When the user clicks outside of the comfirmation prompt, the comfirmation prompt disappears, and the todo is not deleted.
+Prevent the user from interacting with other buttons when the confirmation prompt is open.
+You can start with a collection of your choice. Here's the collection used in our demo app:
+
+let todoItems = [
+  {id: 1, title: 'Homework'},
+  {id: 2, title: 'Shopping'},
+  {id: 3, title: 'Calling Mom'},
+  {id: 4, title: 'Coffee with Elphaba'},
+];
+You can use the id property for each todo object to identify the todo item to
+remove from the DOM. Most applications use a data-id HTML attribute to identify DOM items.
+
+
+STEP 2:
+The program should function in the same way as the previous version except as follows:
+
+When the user right clicks a todo item, display a context menu.
+The context menu has three items:
+Show Details
+Edit Todo
+Delete Todo
+You don't need to add functionality for Show details and Edit Todo.
+When the user clicks the Delete Todo option, display the confirmation dialog.
+When the user clicks anywhere that isn't the context menu, close the context menu.
+-->

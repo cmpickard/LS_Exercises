@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      img {
+        display: block;
+        width: 15%;
+        margin-top: 10px;
+        cursor: auto;
+      }
+    </style>
+    <script>
+      document.querySelector('img').addEventListener('click', event => {
+        event.stopPropagation();
+      }, false);
+    </script>
+  </head>
+  <body>
+    <a href="https://www.launchschool.com">
+      Home
+      <img src="https://d1nrfq3cstnmkv.cloudfront.net/exercises/events_event_handlers/ls_logo.png" />
+    </a>
+  </body>
+</html>
+
+<!-- The code above is buggy. The person who created the code expects that
+nothing will happen when the user clicks on the image. This, however,
+isn't the case; clicking the image still brings the user to another web page.
+
+Study the code and explain the bug. -->
+
+<!-- ANSWER:
+the author is assuming that there is no default behavior triggered when one
+clicks on teh img element. but that's not true. precisely b/c the img element
+is nested inside of the <a> element, it still counts as part of the anchor, and
+thus, clicking on the img element triggers an event with the default behavior
+of following the href value of the anchor tag in which it's embedded.
+to solve this problem, we should add the line,
+event.preventDefault() 
+inside the event handler function 
+-->

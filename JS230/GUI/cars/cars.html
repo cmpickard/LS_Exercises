@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Cars</title>
+  <style>
+    #grid {
+      display: grid;
+      grid-template:
+        "a a a" 175px
+        "a a a" 175px
+        "a a a" 175px / 1fr 1fr 1fr;
+    }
+
+    img {
+      width: 100px;
+      height: 67px;
+      padding: 10px 0;
+    }
+
+    p {
+      margin: 0;
+      padding: 2px;
+    }
+  </style>
+  <script>
+    function createGrid(cars) {
+      resetGrid();
+      let grid = document.getElementById('grid');
+
+      cars.forEach(car => {
+        let nameP = document.createElement('p');
+        nameP.textContent = car.make + ' ' + car.model;
+        nameP.style.fontWeight = 'bolder';
+        let yearP = document.createElement('p');
+        yearP.textContent = `Year: ${car.year}`;
+        let priceP = document.createElement('p');
+        priceP.textContent = `Price: ${car.price}`;
+
+        let figcaption = document.createElement('figcaption');
+        figcaption.appendChild(nameP);
+        figcaption.appendChild(yearP);
+        figcaption.appendChild(priceP);
+
+        let figure = document.createElement('figure');
+        let img = document.createElement('img');
+        img.setAttribute('src', car.image);
+        figure.appendChild(img);
+        figure.appendChild(figcaption)
+
+        grid.appendChild(figure);
+      })
+    }
+
+    function resetGrid() {
+      let grid = document.getElementById('grid');
+      [...grid.children].forEach(child => child.remove());
+    }
+
+    function populateSelects(uniqs) {
+      clearSelects();
+      for (let property in uniqs) {
+        let selectBox = document.getElementById(property);
+
+        uniqs[property].forEach(value => {
+          let option = document.createElement('option');
+          option.setAttribute(property, value);
+          option.setAttribute('class', 'contingent-option');
+          option.textContent = value;
+          selectBox.appendChild(option);
+        });
+      }
+    }
+
+    function clearSelects() {
+      let options = document.querySelectorAll('.contingent-option');
+      [...options].forEach(option => option.remove());
+    }
+
+    function getUniqProperties(cars) {
+      return cars.reduce((uniqs, car) => {
+        if (!uniqs.make.includes(car.make)) {
+          uniqs.make.push(car.make)
+        }
+
+        if (!uniqs.model.includes(car.model)) {
+          uniqs.model.push(car.model)
+        }
+
+        if (!uniqs.year.includes(car.year)) {
+          uniqs.year.push(String(car.year))
+        }
+
+        if (!uniqs.price.includes(car.price)) {
+          uniqs.price.push(String(car.price))
+        }
+
+        return uniqs;
+      }, {make: [], model: [], year: [], price: []});
+    }
+
+    function getFilters() {
+      let selections = [...document.querySelectorAll('select')];
+      return selections.map((elem, idx) => {
+        let result = [...elem.selectedOptions][0].textContent;
+        return (result.includes('Any') ? '' : result);
+      });
+    }
+
+    function filterBy(filters) {
+      const PROPERTIES = ['make', 'model', 'year', 'price'];
+      
+      let filtered = cars.filter(car => {
+        return filters.every((wantedValue, idx) => {
+          let property = PROPERTIES[idx];
+          return (wantedValue === '' || car[property] === wantedValue);
+        });
+      });
+
+      createGrid(filtered);
+      populateSelects(getUniqProperties(filtered));
+    }
+
+    const cars = [
+      { make: 'Honda', image: './images/honda-accord-2005.jpg', model: 'Accord', year: 2005, price: 7000 },
+      { make: 'Honda', image: './images/honda-accord-2008.jpg', model: 'Accord', year: 2008, price: 11000 },
+      { make: 'Toyota', image: './images/toyota-camry-2009.jpg', model: 'Camry', year: 2009, price: 12500 },
+      { make: 'Toyota', image: './images/toyota-corrolla-2016.jpg', model: 'Corolla', year: 2016, price: 15000 },
+      { make: 'Suzuki', image: './images/suzuki-swift-2014.jpg', model: 'Swift', year: 2014, price: 9000 },
+      { make: 'Audi', image: './images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 25000 },
+      { make: 'Audi', image: './images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 26000 },
+    ];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    let form = document.getElementById('filter');
+    let uniqProperties = getUniqProperties(cars);
+    createGrid(cars);
+    populateSelects(uniqProperties);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      let filters = getFilters();
+      filterBy(filters);
+    })
+
+    form.addEventListener('reset', (event) => {
+      event.preventDefault();
+      createGrid(cars);
+      populateSelects(uniqProperties);
+    })
+  })
+  </script>
+</head>
+<body>
+  <h1>Cars</h1>
+  <div id="grid"></div>
+  <h1>Filter</h1>
+  <form id="filter">
+    <label for="make">Car maker:</label>
+    <select name="make" id="make" class="select">
+      <option value="any-make">Any Make</option>
+    </select>
+    <label for="model">Car model:</label>
+    <select name="model" id="model" class="select">
+      <option value="any-model">Any Model</option>
+    </select>
+    <label for="year">Manufacture year:</label>
+    <select name="year" id="year" class="select">
+      <option value="any-year">Any Year</option>
+    </select>
+    <label for="price">Price:</label>
+    <select name="price" id="price" class="select">
+      <option value="any-price">Any Price</option>
+    </select>
+    <input type="submit" id="submit">
+    <input type="reset" id="reset">
+  </form>
+</body>
+</html>
+
+<!-- 
+Create an application that shows a grid of cars from a collection of cars.
+Users can filter the cars by make, model, price, and year of manufacture.
+
+Specifications
+Display the following information for each car:
+
+an image
+make and model
+price
+year manufactured
+The page should have a filtering area that contains the following:
+
+A select box for car makes. Populate the options by selecting all the unique makes from our car collection
+A select box for car models. Populate the options by selecting all the unique car models from our car collection
+A select box for years. Populate the options by selecting all the unique years from our car collection
+A select box for price. Populate the options by selecting all the unique prices from our car collection
+A filter button
+When the user clicks the filter button, filter the cars so that the cars
+displayed all have the same price, model, make and manufacture year as the selected values.
+
+After filtering by make, model selectoin box should be edited to include only
+those models that are made by the selected maker.
+
+-->

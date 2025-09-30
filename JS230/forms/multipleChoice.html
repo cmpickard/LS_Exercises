@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Multiple Choice Quiz</title>
+  <style>
+    fieldset {
+      padding: 15px 10px;
+      margin: 10px;
+    }
+
+    .frozen {
+      color: grey;
+    }
+
+    .result {
+      color: brown;
+      margin-left: 6px;
+      margin-top: 9px;
+    }
+  </style>
+  <script>
+    const questions = [
+      {
+        id: 1,
+        description: "Who is the author of The Hitchhiker's Guide to the Galaxy?",
+        options: ['Dan Simmons', 'Douglas Adams', 'Stephen Fry', 'Robert A. Heinlein'],
+      },
+      {
+        id: 2,
+        description: 'Which of the following numbers is the answer to Life, the \
+                      Universe and Everything?',
+        options: ['66', '13', '111', '42'],
+      },
+      {
+        id: 3,
+        description: 'What is Pan Galactic Gargle Blaster?',
+        options: ['A drink', 'A machine', 'A creature', 'None of the above'],
+      },
+      {
+        id: 4,
+        description: 'Which star system does Ford Prefect belong to?',
+        options: ['Aldebaran', 'Algol', 'Betelgeuse', 'Alpha Centauri'],
+      },
+    ];
+
+    const answerKey = { '1': 'Douglas Adams', '2': '42', '3': 'A drink', '4': 'Betelgeuse' };
+
+    function populateQuestions(form) {
+      clear(form);
+
+      questions.forEach((question, idx) => {
+        let fieldset = document.createElement('fieldset');
+        let questionText = document.createElement('legend');
+
+        questionText.textContent = question.description;
+        fieldset.appendChild(questionText);
+
+        let radios = createRadioDivs(question, idx);
+        radios.forEach(radio => fieldset.appendChild(radio));
+
+        let answerDiv = document.createElement('div');
+        answerDiv.classList.add('result');
+        answerDiv.id = `result-${idx}`;
+        fieldset.appendChild(answerDiv);
+
+        form.appendChild(fieldset);
+      });
+    }
+
+    function createRadioDivs(question, idx) {
+      let radioName = "question";
+
+      return question.options.map((option) => {
+        let radio = document.createElement('input');
+        let idName = option.replaceAll(/ /g, '-');
+        radio.id = idName;
+        radio.value = idName;
+        radio.setAttribute('type', 'radio');
+        radio.setAttribute('name', radioName + idx);
+
+        let label = document.createElement('label');
+        label.setAttribute('for', idName);
+        label.textContent = option;
+
+        let div = document.createElement('div');
+        div.appendChild(radio);
+        div.appendChild(label);
+        return div;
+      });
+    }
+
+    function clear(form) {
+      let children = form.children;
+
+      [...children].forEach(child => {
+        let type = child.getAttribute('type');
+        if (type !== 'submit' && type !== 'reset') child.remove();
+      })
+    }
+
+    function freeze(element) {
+      element.setAttribute('disabled', 'true');
+      element.classList.add('frozen');
+    }
+
+    function unfreeze(element) {
+      element.removeAttribute('disabled');
+      element.classList.remove('frozen');
+    }
+
+    function assessAnswers() {
+      let answers = questions.map((_, idx) => {
+        let ans = document.querySelector(`input[name=question${idx}]:checked`);
+        return ans ? ans.nextElementSibling.textContent : null;
+      })
+
+      let messages = answers.map((answer, idx) => {
+        let actual = answerKey[String(idx + 1)];
+        if (answer === actual) {
+          return "Correct answer!";
+        } else if (answer === null) {
+          return `You didn't answer the question. Correct answer is: ${actual}`;
+        } else {
+          return `Incorrect. Correct answer is ${actual}`;
+        }
+      })
+
+      displayResults(messages);
+    }
+
+    function displayResults(messages) {
+      messages.forEach((message, idx) => {
+        let result = document.getElementById(`result-${idx}`);
+        result.textContent = message;
+      })
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let form = document.getElementById('questions');
+      populateQuestions(form);
+
+      let submit = document.getElementById('submit');
+      let radios = [...document.querySelectorAll('input[type=radio]')];
+      let results = [...document.getElementsByClassName('result')];
+  
+      document.addEventListener('submit', (event) => {
+        event.preventDefault();
+        freeze(submit);
+        radios.forEach(radio => freeze(radio));
+        assessAnswers();
+      })
+
+      document.addEventListener('reset', (event) => {
+        event.preventDefault();
+        populateQuestions(form);
+        radios = [...document.querySelectorAll('input[type=radio]')];
+        results = [...document.getElementsByClassName('result')];
+        unfreeze(submit);
+        radios.forEach(radio => unfreeze(radio));
+        results.forEach(result => result.textContent = '');
+      })
+    })
+
+  </script>
+</head>
+<body>
+  <form id="questions">
+    <input type="submit" id="submit">
+    <input type="reset">
+  </form>
+</body>
+</html>
+
+<!-- For this project, build a multiple choice quiz application that uses an answer
+key to mark questions right or wrong.
+
+Specifications
+You can use the question collection shown below or a collection of your choice.
+Render the question collection to the page. Each question should let the user
+select a radio button to choose one of four possible answers.
+Add a Submit and Reset button.
+When the user clicks the submit button, mark each question as correct, wrong,
+or unanswered.
+When the user supplies a correct answer, display a "Correct Answer" message
+beneath the radio buttons for that question.
+When the user supplies an incorrect answer or fails to answer the question,
+display an appropriate error message and the correct answer beneath the radio
+buttons for that question.
+Disable the Submit button after the user submits the quiz.
+When the user clicks the Reset button, clear all selected radio buttons and
+messages and enable the Submit button. -->

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Calculator</title>
+  <style>
+    body {
+      background-color: lightgreen;
+    }
+    #calculator {
+      width: 366px;
+      height: 346px;
+      margin: 50px auto;
+      background: #fff;
+      border-radius: 4px;
+      border-color: black;
+      border-style: solid;
+      padding: 5px;
+      box-sizing: border-box;
+      background-color:aliceblue;
+    }
+
+    #buttons {
+      display: grid;
+      width: 350px;
+      height: 250px;
+      grid-template:
+      "a a a a" 50px
+      "a a a a" 50px
+      "a a a a" 50px
+      "a a a a" 50px
+      "a a a a" 50px / 1fr 1fr 1fr 1fr;
+    }
+
+    #screen {
+      border-bottom: 1px solid lightgray;
+      height: 70px;
+      width: 350px;
+      margin-bottom: 10px;
+      text-align: end;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: 'Arial Narrow Bold', sans-serif;
+    }
+
+    #entry-top {
+      margin-bottom: 10px;
+      color: aliceblue;
+    }
+
+    #entry-bottom {
+      font-size: 30px;
+    }
+
+    .button {
+      margin: 1px;
+      font-size: 18px;
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+  </style>
+  <script>
+    function clear(clearType, entry, entryTop, result = null) {
+      if (clearType === 'C') {
+        entryTop.textContent = '.';
+        entryTop.style.color = 'aliceblue';
+      }
+
+      entry.textContent = result || '0';
+    }
+
+    function bankOperation(operation, entry, entryTop) {
+      let currVal = entry.textContent;
+      entryTop.textContent = currVal + operation;
+      entryTop.style.color = 'black';
+
+      entry.textContent = '0';
+    }
+
+    function addDigit(numberStr, entry) {
+      if (entry.textContent.slice(-1)[0] === '.' && numberStr === '.') return;
+
+      let currVal = entry.textContent;
+      entry.textContent = (currVal === '0' ? numberStr : currVal + numberStr);
+    }
+
+    function calculate(entry, entryTop) {
+      if (entryTop.textContent === '.') return entry.textContent;
+
+      let currentVal = Number(entry.textContent);
+      let bankedVal = Number(entryTop.textContent.slice(0,-1));
+      let operator = entryTop.textContent.slice(-1);
+      let result;
+
+      if (operator === '*') {
+        result = String(currentVal * bankedVal);
+      } else if (operator === '/') {
+        result = String(bankedVal / currentVal).slice(0, 12);
+      } else if (operator === '+') {
+        result = String(currentVal + bankedVal);
+      } else if (operator === '-') {
+        result = String(bankedVal - currentVal);
+      } else if (operator === '%') {
+        result = String(bankedVal % currentVal);
+      }
+
+      return result;
+    }
+
+    function negate(entry) {
+      if (entry.textContent[0] === '-') {
+        entry.textContent = entry.textContent.slice(1);
+      } else {
+        entry.textContent = '-' + entry.textContent;
+      }
+    }
+
+    function handleButton(value, entry, entryTop, calculator) {
+      const CLEARS = ['C', 'CE'];
+      const OPERATORS = ['+', '-', '%', '/', '*'];
+      const DIGITS = ['0', '1', '2', '3', '4', '5',
+                      '6', '7', '8', '9', '0', '.'];
+
+      if (CLEARS.includes(value)) {
+        clear(value, entry, entryTop);
+      } else if (OPERATORS.includes(value)) {
+        bankOperation(value, entry, entryTop);
+      } else if (DIGITS.includes(value)) {
+        addDigit(value, entry);
+      } else if (value === '=') {
+        let result = calculate(entry, entryTop);
+        calculator.dataset.result = "true";
+        clear('C', entry, entryTop, String(result));
+      } else {
+        negate(entry);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        let target = event.target;
+        let calculator = document.getElementById('calculator');
+        let entry = document.getElementById('entry-bottom');
+        let entryTop = document.getElementById('entry-top');
+        let value = target.textContent;
+
+        if (!target.classList.contains('button')) return;
+
+        if (calculator.dataset.result === 'true') {
+          calculator.dataset.result = 'false';
+          clear('C', entry, entryTop);
+        }
+
+        handleButton(value, entry, entryTop, calculator);
+      })
+    })
+  </script>
+</head>
+<body>
+  <main id="calculator" data-result="false">
+    <section id="screen">
+      <div id="entry-top">.</div>
+      <div id="entry-bottom">0</div>
+    </section>
+    <section id="buttons">
+      <button class="button" id="ce">CE</button>
+      <button class="button" id="c">C</button>
+      <button class="button" id="neg">NEG</button>
+      <button class="button" id="divide">/</button>
+      <button class="button" id="seven">7</button>
+      <button class="button" id="eight">8</button>
+      <button class="button" id="nine">9</button>
+      <button class="button" id="times">*</button>
+      <button class="button" id="four">4</button>
+      <button class="button" id="five">5</button>
+      <button class="button" id="six">6</button>
+      <button class="button" id="minus">-</button>
+      <button class="button" id="one">1</button>
+      <button class="button" id="two">2</button>
+      <button class="button" id="three">3</button>
+      <button class="button" id="plus">+</button>
+      <button class="button" id="zero">0</button>
+      <button class="button" id="point">.</button>
+      <button class="button" id="modulo">%</button>
+      <button class="button" id="equals">=</button>
+    </section>
+  </main>
+</body>
+</html>
+
+<!-- Build A GUI standard calculator with the following specifications:
+
+Specifications
+Calculator screen
+
+The calculator should have a screen like a standard calculator. The screen
+should have two parts:
+
+A lower part—the entry window—that shows the current entry: the number you
+are entering or the most recent result.
+An upper part—the operation window—that shows the operation in progress,
+e.g., 1 + 5 / 2 +.
+Calculator buttons
+
+The calculator should have functioning buttons for the following:
+
+All digits: 0-9
+., +, -, /, *, %, =, NEG, C, CE
+The NEG button negates the value in the entry window.
+The CE button clears the entry window and replaces it with 0.
+The C button clears both the entry and operation windows and leaves a value
+of 0 in the entry window.
+Operations
+
+When the user clicks a digit button, append the digit to the number in the
+entry window. If the value in the entry window is 0, replace the 0 with the
+entered digit.
+When the user clicks an operator button, copy the current entry and the
+operator into the operation window. You can leave the current entry in the
+entry window or set it to 0, but, either way, the next digit entered should
+begin a new number. Note that % is the modulo operator.
+When the user clicks the = button, use the current operation and the current
+entry to calculate the final result. Clear the current operation window and
+display the result in the entry window. -->

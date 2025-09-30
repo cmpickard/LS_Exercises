@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+    button {
+      padding: 10px;
+      background-color: lightblue;
+      border-radius: 5px;
+      border-color: black;
+      border-style: solid;
+      margin: 10px;
+    }
+
+    #clock {
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+      font-size: 50px;
+      font-style: bolder;
+      margin: 30px;
+    }
+  </style>
+  <script>
+    function resetClock() {
+      stopClock();
+      let timeParts = document.getElementById('clock').children;
+      [...timeParts].forEach(child => child.textContent = '00');
+    }
+
+    function stopClock() {
+      let intervalId = document.getElementById('clock').dataset.interval;
+      clearInterval(intervalId);
+      document.getElementById('clock').dataset.interval = '';
+
+      let button = document.getElementById('start-stop');
+      button.dataset.state = 'stop';
+      button.textContent = 'Start';
+    }
+    
+    function startClock() {
+      let id = setInterval(updateClock, 10);
+      document.getElementById('clock').dataset.interval = id;
+
+      let button = document.getElementById('start-stop');
+      button.dataset.state = 'start';
+      button.textContent = 'Stop';
+    }
+
+    function updateClock() {
+      let [cents, secs, mins, hours] = formatTimes(getCurrTime());
+
+      document.getElementById('cents').textContent = cents;
+      document.getElementById('seconds').textContent = secs;
+      document.getElementById('minutes').textContent = mins;
+      document.getElementById('hours').textContent = hours;
+    }
+
+    function formatTimes(times) {
+      return times.map(time => {
+        return (time < 10) ? '0' + String(time) : String(time);
+      });
+    }
+
+    function getCurrTime() {
+      const MAX_CENTS = 99;
+      const MAX_SECS = 59;
+      const MAX_MINS = 59;
+      const MAX_HOURS = 99;
+
+      let cents = Number(document.getElementById('cents').textContent) + 1;
+      let secs = Number(document.getElementById('seconds').textContent);
+      let mins = Number(document.getElementById('minutes').textContent);
+      let hours = Number(document.getElementById('hours').textContent);
+
+      if (cents === 100) {
+        cents = 0;
+        secs = secs === MAX_SECS ? 0 : secs + 1;
+        if (secs === 0) {
+          mins = mins === MAX_MINS ? 0 : mins + 1;
+          if (mins === 0) {
+            hours = hours === MAX_HOURS ? 0 : hours + 1;
+          }
+        }
+      }
+
+      return [cents, secs, mins, hours];
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById("buttons").addEventListener('click', (event) => {
+        event.preventDefault();
+        let reset = document.getElementById('reset');
+        let startStop = document.getElementById('start-stop');
+        if (event.target === reset) {
+          resetClock();
+        } else if (event.target === startStop) {
+          event.target.dataset.state === "stop" ? startClock() : stopClock();
+        }
+      })
+    });
+  </script>
+</head>
+<body>
+  <h1>Stopwatch</h1>
+  <div id="clock" data-interval="">
+    <span class='time' id="hours">00</span>:<span class='time'
+    id="minutes">00</span>:<span class='time'
+    id="seconds">00</span>:<span class='time'
+    id="cents">00</span>
+  </div>
+  <div id="buttons">
+    <button id="start-stop" data-state="stop">Start</button><button href="#" id="reset">Reset</button>
+  </div>
+</body>
+</html>
+<!-- Create a stopwatch application.
+
+Specifications
+The Timer
+
+The stopwatch timer should have four 2-digit counters:
+
+hours (00-99)
+minutes (00-59)
+seconds (00-59)
+centiseconds (00-99)
+All counters should use a leading zero when the corresponding time value is less than 10.
+
+Note that one centisecond is 1/100th of a second or 10 milliseconds.
+
+The Controls
+
+The stopwatch should have the following controls:
+
+a Start/Stop button
+a Reset button
+Functionality
+
+When the user clicks the Start button:
+
+The text on the button changes to Stop.
+The timer starts running the centiseconds counter.
+When the centiseconds counter reaches 100, it resets to zero and the seconds counter starts incrementing.
+When the seconds counter reaches 60, it resets to zero and the minutes counter starts incrementing.
+When the minutes counter reaches 60, it resets to zero and the hour counter starts incrementing.
+When the user clicks the Stop button:
+
+The timer stops.
+The button text changes to Start.
+When the user clicks the Reset button:
+
+The timer stops running if it is already running.
+The timer resets all counters to 00. -->

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Rich Text Editor</title>
+  <style>
+    body {
+      height: 700px;
+    }
+    section {
+      border-radius: 3px;
+      border-color: black;
+      border-style: solid;
+      height: 90%;
+      width: 100%;
+    }
+    nav {
+      margin-bottom: 5px;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let section = document.getElementById('text-box');
+
+      document.addEventListener('click', (event) => {
+        if (event.target !== document.getElementById('bold')) return;
+        let selection = window.getSelection();
+        let allText = selection.extentNode.data;
+        let anchor = selection.anchorOffset;
+        let extent = selection.extentOffset;
+        if (anchor > extent) [anchor, extent] = [extent, anchor];
+        let before = allText.slice(0, anchor);
+        let text = allText.slice(anchor, extent);
+        let after = allText.slice(extent);
+        let strong = document.createElement('strong');
+        strong.textContent = text;
+        
+        section.innerHTML = section.innerHTML + `<strong>${text}</strong`;
+        console.log(allText.slice(anchor, extent));
+      })
+    })
+  </script>
+</head>
+<body>
+  <nav id="buttons">
+    <button id="bold">Bold</button>
+    <button id="italic">Italic</button>
+    <button id="underline">Underline</button>
+    <button id="strikethrough">Strikethrough</button>
+    <button id="link">Link</button>
+    <button id="unordeded-list">Unordered List</button>
+    <button id="ordered-list">Ordered List</button>
+  </nav>
+  <section id='text-box' contenteditable="true"></section>
+</body>
+</html>
+<!-- Create a Rich Text editor that lets users edit text in a WYSIWYG
+(What You See Is What You Get) manner.
+
+Specifications
+Controls
+
+The WYSIWYG editor should let users:
+
+Enter text.
+Make text bold.
+Italicize text.
+Underline text.
+Strike-through text.
+Create a link from some text.
+Create an unordered list.
+Create an ordered list.
+Align text to the right, left, center, and fully-justified. -->

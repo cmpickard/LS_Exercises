@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!-- Create a page that displays a grid of animal images and shows a tooltip for
+// each animal that contains more information about the animal.
+
+// Requirements
+// Choose any animals that you want.
+// Create markup that includes an image and caption for each animal.
+// Hide the captions initially.
+// Display the caption as a tooltip when the user hovers the mouse cursor over
+// the image for more than two seconds. Close the tooltip when the user moves
+// the mouse off the image.
+// Don't display the caption tooltip when the user moves the cursor off the
+// image before the two second time delay elapses. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Animal Grid</title>
+  <style>
+    body {
+      background-color: aquamarine;
+    }
+
+    figcaption {
+      visibility: hidden;
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: 800px 800px;
+    }
+
+    img {
+      width: 750px;
+      height: 400px;
+      border-radius: 4px;
+      border-color: midnightblue;
+      border-width: 6px;
+      border-style: solid;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let grid = document.getElementById('grid');
+      let timeoutID = null;
+      let visibleCaption = null;
+
+      grid.addEventListener('mouseover', (event) => {
+        let target = event.target;
+        if (target.tagName !== "IMG") return;
+
+        let id = target.id + "-caption";
+        timeoutID = setTimeout(() => {
+          visibleCaption = document.getElementById(id);
+          visibleCaption.style.visibility = 'visible';
+          timeoutID = null;
+        }, 2000);
+      })
+
+      grid.addEventListener('mouseout', (event) => {
+        let target = event.target;
+        if (target.tagName !== "IMG") return;
+
+        if (timeoutID) {
+          clearTimeout(timeoutID);
+          timeoutID = null;
+        }
+
+        if (visibleCaption) {
+          visibleCaption.style.visibility = 'hidden';
+          visibleCaption = null;
+        }
+      })
+    })
+  </script>
+</head>
+<body>
+  <div id="grid">
+    <figure>
+      <img src="./animalImgs/quetzal.jpg" id="quetzal">
+      <figcaption id="quetzal-caption">Quetzal are found in forests and woodlands, especially in humid
+      highlands, with the five species from the genus Pharomachrus being
+      exclusively Neotropical, while the single Euptilotis species is found in
+      Mexico and very locally in southern United State</figcaption>
+    </figure>
+    <figure>
+      <img src="./animalImgs/blackbuck.jpg" id="blackbuck">
+      <figcaption id="blackbuck-caption">The blackbuck, also known as the Indian antelope, is an
+      antelope found in Pakistan, India and Nepal. The blackbuck is the sole
+      extant member of the genus Antilope. The species was described and given
+      its binomial name by Swedish zoologist Carl Linnaeus in 1758</figcaption>
+    </figure>
+     <figure>
+      <img src="./animalImgs/golden_pheasant.jpg" id="pheasant">
+      <figcaption id="pheasant-caption">The golden pheasant or Chinese pheasant (Chrysolophus pictus)
+        is a gamebird of the order Galliformes (gallinaceous birds) and the
+        family Phasianidae (pheasants). It is native to forests in mountainous
+        areas of western China.</figcaption>
+    </figure>
+    <figure>
+      <img src="./animalImgs/greater_bird_of_paradise.jpg" id="paradise">
+      <figcaption id="paradise-caption">The greater bird-of-paradise (Paradisaea apoda) is a
+        bird-of-paradise in the genus Paradisaea. The greater bird-of-paradise
+        is the largest member in the genus Paradisaea, with males measuring up
+        to 43 cm (17 in) (excluding the long twin tail wires). The female is
+        smaller, at only 35 cm (14 in).</figcaption>
+    </figure>
+  </div>
+</body>
+</html>

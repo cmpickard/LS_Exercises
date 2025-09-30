@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sign up</title>
+  <style>
+    label {
+      display: block;
+    }
+
+    input {
+      display: inline-block;
+      /* width: 45%; */
+    }
+
+    .error {
+      color: red;
+      display: inline-block;
+      /* width: 45%; */
+    }
+
+    #form-error {
+      color: red;
+    }
+
+    #submit {
+      display: block;
+    }
+
+  </style>
+  <script>
+    function handleError(input, form) {
+      input.classList.add('invalid');
+      form.classList.add('invalid');
+
+      let message;
+      let errorSpan;
+      if (input.classList.contains('card')) {
+        errorSpan = document.getElementById('card-error');
+      } else {
+        errorSpan = input.nextElementSibling;
+      }
+
+      if (input.id === 'first-name' && input.validity.valueMissing) {
+        message = "First name is required";
+      } else if (input.id === 'last-name' && input.validity.valueMissing) {
+        message = "Last name is required";
+      } else if (input.id === 'password' && input.validity.valueMissing) {
+        message = "Password is required";
+      } else if (input.id === 'password' && input.validity.tooShort) {
+        message = "Password must contain at least 10 characters"
+      } else if (input.id === 'email' && input.validity.valueMissing) {
+        message = "Email is required";
+      } else if (input.id === 'email' && input.validity.patternMismatch) {
+        message = "Email must be valid (e.g. local_name@domain.com)"
+      } else if (input.id === 'phone' && input.validity.patternMismatch) {
+        message = 'Phone number must in this format: XXX-XXX-XXXX'
+      } else if (input.classList.contains('card') && 
+                 (input.validity.patternMismatch || !allCards(input))) {
+        message = 'Each credit card component must be exactly 4 digits long'
+      }
+
+      errorSpan.textContent = message;
+    }
+
+    function allCards(input) {
+      if (!input.classList.contains('card')) return;
+
+      let cards = [...document.getElementsByClassName('card')];
+      let allZero = cards.every(card => card.value.length === 0);
+      let allFour = cards.every(card => card.value.length === 4);
+
+      return allZero || allFour;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let firstName = document.getElementById('first-name');
+      let lastName = document.getElementById('last-name');
+      let password = document.getElementById('password');
+      let email = document.getElementById('email');
+      let phone = document.getElementById('phone');
+      let form = document.getElementById('form');
+      let cards = [...document.getElementsByClassName('card')];
+      let mainError = document.getElementById('form-error');
+
+      const ALLOWED_NON_ALPHAS = ['Backspace', 'Delete',
+                                  'ArrowLeft', 'ArrowRight', 'Tab'];
+
+      const NEED_VALIDATION = [firstName, lastName, password,
+                               email, phone, ...cards];
+
+      document.addEventListener('blur', (event) => {
+        let target = event.target;
+        if (!NEED_VALIDATION.includes(target)) return;
+
+        if (!target.validity.valid || !allCards(target)) {
+          handleError(target, form);
+        } else {
+          target.classList.remove('invalid');
+          if (form.checkValidity()) {
+            form.classList.remove('invalid');
+            form.classList.add('valid');
+            mainError.textContent = '';
+          }
+        }
+      }, true)
+
+      document.addEventListener('keydown', (event) => {
+        let target = event.target;
+        console.log(event.key)
+        if (ALLOWED_NON_ALPHAS.includes(event.key)) return;
+        if (target.id === 'phone' || target.classList.contains('card')) {
+          if (/[^0-9]/.test(event.key)) event.preventDefault();
+        }
+      })
+
+      document.addEventListener('keyup', (event) => {
+        let target = event.target;
+        if (!target.classList.contains('card')) return;
+
+        console.log(target.value)
+        if (target.value.length === 4 && target.id !== 'last') {
+          target.nextElementSibling.focus();
+        }
+      })
+
+      document.addEventListener('keypress', (event) => {
+        let target = event.target;
+        if (target.id === 'first-name' || target.id === 'last-name') {
+          if (/[^a-zA-Z'\s]/.test(event.key)) event.preventDefault();
+        }
+      })
+
+      document.addEventListener('focus', (event) => {
+        let target = event.target;
+        if (!NEED_VALIDATION.includes(target)) return;
+
+        target.nextElementSibling.textContent = '';
+      }, true)
+
+      document.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (!form.checkValidity()) {
+          mainError.textContent = "Fix all errors before submitting the form";
+          NEED_VALIDATION.forEach(input => {
+            if (!input.validity.valid) handleError(input, form);
+          });
+
+        } else {
+          mainError.textContent = '';
+        }
+      })
+    })
+  </script>
+</head>
+<body>
+  <div id="form-error"></div>
+  <form novalidate id="form" class="invalid">
+    <label for="first-name">First Name*</label>
+    <input type="text" id="first-name" name="first-name" pattern="a-zA-Z'\s" required>
+    <span id="first-error" class="error"></span>
+
+    <label for="last-name">Last Name*</label>
+    <input type="text" id="last-name" name="last-name" pattern="a-zA-Z'\s" required>
+    <span id="last-error" class="error"></span>
+
+    <label for="password">Password*</label>
+    <input type="password" id="password" name="password" minlength="10" required>
+    <span id="password-error" class="error"></span>
+
+    <label for="email">Email*</label>
+    <input type="email" id="email" name="email"pattern=".+@.+" required>
+    <span id="email-error" class="error"></span>
+
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" name="phone" pattern="\d{3}-\d{3}-\d{4}">
+    <span id="phone-error" class="error"></span>
+
+    <label for="card">Credit Card</label>
+    <input type="text" name="card" class="card" maxlength="4" pattern="\d{4}">-
+    <input type="text" name="card" class="card" maxlength="4" pattern="\d{4}">-
+    <input type="text" name="card" class="card" maxlength="4" pattern="\d{4}">-
+    <input type="text" name="card" class="card" maxlength="4" pattern="\d{4}" id="last">
+    <span id="card-error" class="error"></span>
+
+    <input type="submit" id="submit" value="Sign up">
+  </form>
+  <p style="color: red">*indicates that the field is required</p>
+</body>
+</html>
+
+<!-- Create a sign-up form that validates each field when it loses focus.
+
+Specifications
+Form Controls
+
+The form should have the following controls:
+
+First Name
+Last Name
+Email
+Password
+Phone
+The form should also have a submit button with the value of "Sign Up".
+
+Validation Rules
+
+The following validation rules apply to the form's fields:
+
+The first name, last name, password, and email fields are all required.
+The phone number is optional.
+Password must be at least 10 characters long.
+Phone number must use US-style numbers: 111-222-3333.
+Email should conform to the constraint validation pattern .+@.+ (see below).
+Functionality
+
+When a form field loses focus, validate the field value against the validation
+rule for that field. If the value is not valid, display a red error message to
+the right of the field. You may also want to add a red border to the input
+element. The error message should describe what the program expects, e.g.,
+"The password is required."
+
+When a field with an error regains focus, the message should disappear. It
+should not reappear after the user corrects the field.
+
+When the user clicks the Submit button, don't send the form to the server if
+it has any validation errors. Instead, display an error message at the top of
+the page that says "Fix errors before submitting this form."
+
+The form validation error message should disappear when the user corrects all
+fields with an error.
+
+Implementation
+You should not use the built-in error message mechanism. You can disable them
+with the form element's novalidate attribute.
+Use HTML5 constraint validation API and the pattern attribute to implement
+validations. MDN has a nice article on form validation. Read the section on
+constraint validation API. 
+
+
+PART TWO:
+The first and last names aren't validated properly: the user can use numbers
+in their name. With our current validation rules, the user can get away with
+using numbers as names. Don't let the user enter invalid characters in these
+fields.
+Solicit a credit card number as four hyphen-separated 4-digit numbers.
+
+Specifications
+Use the pattern a-zA-Z'\s to validate user input for first and last names.
+Use the keypress event to prevent the user from entering a character that
+doesn't match the pattern.
+Add a credit card field to the form. The field should use 4 inputs, all with
+the same name attribute.
+Each credit card input should have a maximum length of 4 characters.
+Each credit card input should only allow numeric digits.
+The phone number input should only allow numeric digits.
+Use the keydown event to prevent the user from entering non-numeric characters
+in the credit card inputs.
+
+
+PART THREE:
+In the previous exercise, we added a Credit Card field to the sign-up form.
+The field uses four separate inputs, with room for 4 digits per input.
+To enter a credit card number, the user must change focus from one input to
+the next by pressing the Tab key or clicking the mouse. A nice touch for this
+application would have the focus change automatically as the user enters the
+4th digit in each input.
+
+Specifications
+Validate the credit card inputs to enforce precisely 4 digits in each input.
+Attach an event handler to the first three credit card inputs to automatically
+change the focus to the next input when the user enters the 4th digit.
+The last input doesn't need an event handler.
+-->
