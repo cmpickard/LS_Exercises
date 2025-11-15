@@ -3,113 +3,217 @@
 <head>
   <meta charset="utf-8">
   <style>
+    body {
+      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+
     button {
       padding: 10px;
       background-color: lightblue;
       border-radius: 5px;
       border-color: black;
       border-style: solid;
-      margin: 10px;
+      margin: 10 10 10 0;
     }
 
     #clock {
-      font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
       font-size: 50px;
       font-style: bolder;
       margin: 30px;
     }
+
+    h1 {
+      font-size: 40px;
+      margin-left: 30px;
+      font-weight: 100;
+    }
+
+    #reset {
+      margin-left: 10px;
+    }
+
   </style>
   <script>
-    function resetClock() {
-      stopClock();
-      let timeParts = document.getElementById('clock').children;
-      [...timeParts].forEach(child => child.textContent = '00');
-    }
+    class WatchManager {
+      static START_TIME = '00';
+      static SEPARATOR = ':';
+      static MAX_MILLISECS = 99;
+      static MAX_SECS = 59;
+      static MAX_MINS = 59;
+      static MAX_HOURS = 99;
 
-    function stopClock() {
-      let intervalId = document.getElementById('clock').dataset.interval;
-      clearInterval(intervalId);
-      document.getElementById('clock').dataset.interval = '';
+      constructor() {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.buildClock();
+          this.mills = document.getElementById('milliseconds');
+          this.secs = document.getElementById('seconds');
+          this.mins = document.getElementById('minutes');
+          this.hours = document.getElementById('hours');
+          this.buttons = document.getElementById('buttons');
+          this.start = document.getElementById('start');
+          this.reset = document.getElementById('reset');
+          this.clock = document.getElementById('clock');
+          this.intervalId = null;
+          this.attachListeners();
+        });
+      }
 
-      let button = document.getElementById('start-stop');
-      button.dataset.state = 'stop';
-      button.textContent = 'Start';
-    }
-    
-    function startClock() {
-      let id = setInterval(updateClock, 10);
-      document.getElementById('clock').dataset.interval = id;
+      buildClock() {
+        let h1 = document.createElement('h1');
+        h1.textContent = "Stopwatch";
+        document.body.appendChild(h1);
 
-      let button = document.getElementById('start-stop');
-      button.dataset.state = 'start';
-      button.textContent = 'Stop';
-    }
+        let clock = document.createElement('main');
+        clock.id = 'clock';
+        clock.dataset.on = 'false';
+        document.body.appendChild(clock);
 
-    function updateClock() {
-      let [cents, secs, mins, hours] = formatTimes(getCurrTime());
+        let hours = document.createElement('span');
+        hours.id = 'hours';
+        hours.textContent = WatchManager.START_TIME;
+        clock.appendChild(hours);
 
-      document.getElementById('cents').textContent = cents;
-      document.getElementById('seconds').textContent = secs;
-      document.getElementById('minutes').textContent = mins;
-      document.getElementById('hours').textContent = hours;
-    }
+        let colon = document.createTextNode(WatchManager.SEPARATOR);
+        clock.appendChild(colon);
 
-    function formatTimes(times) {
-      return times.map(time => {
-        return (time < 10) ? '0' + String(time) : String(time);
-      });
-    }
+        let mins = document.createElement('span');
+        mins.id = 'minutes';
+        mins.textContent = WatchManager.START_TIME;
+        clock.appendChild(mins);
+        clock.appendChild(colon.cloneNode(false));
 
-    function getCurrTime() {
-      const MAX_CENTS = 99;
-      const MAX_SECS = 59;
-      const MAX_MINS = 59;
-      const MAX_HOURS = 99;
+        let secs = document.createElement('span');
+        secs.id = 'seconds';
+        secs.textContent = WatchManager.START_TIME;
+        clock.appendChild(secs);
+        clock.appendChild(colon.cloneNode(false));
 
-      let cents = Number(document.getElementById('cents').textContent) + 1;
-      let secs = Number(document.getElementById('seconds').textContent);
-      let mins = Number(document.getElementById('minutes').textContent);
-      let hours = Number(document.getElementById('hours').textContent);
+        let mills = document.createElement('span');
+        mills.id = 'milliseconds';
+        mills.textContent = WatchManager.START_TIME;
+        clock.appendChild(mills);
 
-      if (cents === 100) {
-        cents = 0;
-        secs = secs === MAX_SECS ? 0 : secs + 1;
-        if (secs === 0) {
-          mins = mins === MAX_MINS ? 0 : mins + 1;
-          if (mins === 0) {
-            hours = hours === MAX_HOURS ? 0 : hours + 1;
+        let buttons = document.createElement('div');
+        buttons.id = 'buttons';
+        clock.appendChild(buttons);
+
+        let start = document.createElement('button');
+        start.textContent = 'Start';
+        start.id = 'start';
+        start.classList.add('button');
+        buttons.appendChild(start);
+
+        let reset = document.createElement('button');
+        reset.textContent = 'Reset';
+        reset.classList.add('button');
+        reset.id = 'reset';
+        buttons.appendChild(reset);
+      }
+
+      attachListeners() {
+        this.buttons.addEventListener('click', (event) => {
+          let target = event.target;
+          if (target === this.start && this.clock.dataset.on === 'false') {
+            this.startClock();
+          } else if (target === this.start && this.clock.dataset.on === 'true') {
+            this.stopClock();
+          } else if (target === this.reset) {
+            this.resetClock();
           }
+        })
+      }
+
+      startClock() {
+        this.intervalId = setInterval(this.updateClock.bind(this), 10);
+        this.toggleStart();
+        this.clock.dataset.on = 'true';
+      }
+
+      stopClock() {
+        clearInterval(this.intervalId);
+        this.toggleStart();
+        this.clock.dataset.on = 'false';
+      }
+
+      resetClock() {
+        if (this.clock.dataset.on === 'true') {
+          this.stopClock();
+          this.clock.dataset.on = 'false';
+        }
+
+        this.hours.textContent = WatchManager.START_TIME;
+        this.mins.textContent = WatchManager.START_TIME;
+        this.secs.textContent = WatchManager.START_TIME;
+        this.mills.textContent = WatchManager.START_TIME;
+      }
+
+      updateClock() {
+        if (this.hasMaxDigits(this.mills)) {
+          this.mills.textContent = WatchManager.START_TIME;
+
+          if (this.hasMaxDigits(this.secs)) {
+            this.secs.textContent = WatchManager.START_TIME;
+
+            if (this.hasMaxDigits(this.mins)) {
+              this.mins.textContent = WatchManager.START_TIME;
+
+              if (this.hasMaxDigits(this.hours)) {
+                this.hours.textContent = WatchManager.START_TIME;
+              } else {
+                this.plusOne(this.hours);
+              }
+
+            } else {
+              this.plusOne(this.mins);
+            }
+          } else {
+            this.plusOne(this.secs);
+          }
+        } else {
+          this.plusOne(this.mills);
         }
       }
 
-      return [cents, secs, mins, hours];
+      hasMaxDigits(timeNode) {
+        let max;
+
+        switch (timeNode) {
+          case this.mills:
+            max = WatchManager.MAX_MILLISECS;
+            break;
+          case this.secs:
+            max = WatchManager.MAX_SECS;
+            break;
+          case this.mins:
+            max = WatchManager.MAX_MINS;
+            break;
+          case this.hours:
+            max = WatchManager.MAX_HOURS;
+            break;
+        }
+
+        return Number(timeNode.textContent) === max;
+      }
+
+      plusOne(timeNode) {
+        let currNum = Number(timeNode.textContent) + 1;
+        let strNum = currNum > 9 ? String(currNum) : '0' + String(currNum);
+        timeNode.textContent = strNum;
+      }
+
+      toggleStart() {
+        if (this.start.textContent === 'Start') {
+          this.start.textContent = 'Stop';
+        } else {
+          this.start.textContent = 'Start';
+        }
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById("buttons").addEventListener('click', (event) => {
-        event.preventDefault();
-        let reset = document.getElementById('reset');
-        let startStop = document.getElementById('start-stop');
-        if (event.target === reset) {
-          resetClock();
-        } else if (event.target === startStop) {
-          event.target.dataset.state === "stop" ? startClock() : stopClock();
-        }
-      })
-    });
+    let clock = new WatchManager();
   </script>
 </head>
 <body>
-  <h1>Stopwatch</h1>
-  <div id="clock" data-interval="">
-    <span class='time' id="hours">00</span>:<span class='time'
-    id="minutes">00</span>:<span class='time'
-    id="seconds">00</span>:<span class='time'
-    id="cents">00</span>
-  </div>
-  <div id="buttons">
-    <button id="start-stop" data-state="stop">Start</button><button href="#" id="reset">Reset</button>
-  </div>
 </body>
 </html>
 <!-- Create a stopwatch application.

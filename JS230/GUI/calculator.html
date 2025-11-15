@@ -45,7 +45,6 @@
 
     #entry-top {
       margin-bottom: 10px;
-      color: aliceblue;
     }
 
     #entry-bottom {
@@ -57,111 +56,166 @@
       font-size: 18px;
       font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     }
+
+    .hidden {
+      color: aliceblue;
+    }
+
+    .visible {
+      color: black;
+    }
   </style>
   <script>
-    function clear(clearType, entry, entryTop, result = null) {
-      if (clearType === 'C') {
-        entryTop.textContent = '.';
-        entryTop.style.color = 'aliceblue';
+    class CalculatorManager {
+      static BUTTON_NAMES = {
+        ce: 'clear-entry',
+        c: 'clear-all',
+        one: '1',
+        two: '2',
+        three: '3',
+        four: '4',
+        five: '5',
+        six: '6',
+        seven: '7',
+        eight: '8',
+        nine: '9',
+        zero: '0',
+        ce: 'clear',
+        c:'clear-all',
+        neg: 'negative',
+        divide: '/',
+        times: '*',
+        minus: '-',
+        plus: '+',
+        equals: 'equals',
+        point: 'point',
+        modulo: '%',
       }
 
-      entry.textContent = result || '0';
-    }
+      constructor() {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.windowTop = document.getElementById('entry-top');
+          this.windowBottom = document.getElementById('entry-bottom');
+          this.buttons = document.getElementById('buttons');
+          this.resetWindow();
+          this.attachListeners();
+        })
 
-    function bankOperation(operation, entry, entryTop) {
-      let currVal = entry.textContent;
-      entryTop.textContent = currVal + operation;
-      entryTop.style.color = 'black';
-
-      entry.textContent = '0';
-    }
-
-    function addDigit(numberStr, entry) {
-      if (entry.textContent.slice(-1)[0] === '.' && numberStr === '.') return;
-
-      let currVal = entry.textContent;
-      entry.textContent = (currVal === '0' ? numberStr : currVal + numberStr);
-    }
-
-    function calculate(entry, entryTop) {
-      if (entryTop.textContent === '.') return entry.textContent;
-
-      let currentVal = Number(entry.textContent);
-      let bankedVal = Number(entryTop.textContent.slice(0,-1));
-      let operator = entryTop.textContent.slice(-1);
-      let result;
-
-      if (operator === '*') {
-        result = String(currentVal * bankedVal);
-      } else if (operator === '/') {
-        result = String(bankedVal / currentVal).slice(0, 12);
-      } else if (operator === '+') {
-        result = String(currentVal + bankedVal);
-      } else if (operator === '-') {
-        result = String(bankedVal - currentVal);
-      } else if (operator === '%') {
-        result = String(bankedVal % currentVal);
       }
 
-      return result;
-    }
-
-    function negate(entry) {
-      if (entry.textContent[0] === '-') {
-        entry.textContent = entry.textContent.slice(1);
-      } else {
-        entry.textContent = '-' + entry.textContent;
+      resetWindow(fullClear = true) {
+        this.windowBottom.textContent = '0';
+        this.windowBottom.dataset.cleared = 'true';
+        if (fullClear) {
+          this.windowTop.textContent = '.';
+          this.windowTop.classList.add('hidden');
+          this.windowTop.classList.remove('visible');
+        }
       }
-    }
 
-    function handleButton(value, entry, entryTop, calculator) {
-      const CLEARS = ['C', 'CE'];
-      const OPERATORS = ['+', '-', '%', '/', '*'];
-      const DIGITS = ['0', '1', '2', '3', '4', '5',
-                      '6', '7', '8', '9', '0', '.'];
-
-      if (CLEARS.includes(value)) {
-        clear(value, entry, entryTop);
-      } else if (OPERATORS.includes(value)) {
-        bankOperation(value, entry, entryTop);
-      } else if (DIGITS.includes(value)) {
-        addDigit(value, entry);
-      } else if (value === '=') {
-        let result = calculate(entry, entryTop);
-        calculator.dataset.result = "true";
-        clear('C', entry, entryTop, String(result));
-      } else {
-        negate(entry);
+      bankValue() {
+        let value = this.windowBottom.textContent;
+        this.windowTop.textContent = value;
+        this.windowTop.classList.add('visible');
+        this.windowTop.classList.remove('hidden');
+        this.resetWindow(false);
       }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.addEventListener('click', (event) => {
-        event.preventDefault();
-
-        let target = event.target;
-        let calculator = document.getElementById('calculator');
-        let entry = document.getElementById('entry-bottom');
-        let entryTop = document.getElementById('entry-top');
-        let value = target.textContent;
-
-        if (!target.classList.contains('button')) return;
-
-        if (calculator.dataset.result === 'true') {
-          calculator.dataset.result = 'false';
-          clear('C', entry, entryTop);
+      handleNumber(value) {
+        if (this.windowBottom.dataset.cleared === 'true' && value === '0') {
+          return;
+        } else if (this.windowBottom.dataset.cleared === 'true') {
+          this.windowBottom.textContent = '';
+          this.windowBottom.dataset.cleared = 'false';
         }
 
-        handleButton(value, entry, entryTop, calculator);
-      })
-    })
+        this.windowBottom.textContent += value;
+      }
+
+      handleDecimal() {
+        if (this.windowBottom.dataset.cleared === 'true') {
+          this.windowBottom.textContent = '0.';
+          this.windowBottom.dataset.cleared = 'false';
+        } else if (!/\./.test(this.windowBottom.textContent)){
+          this.windowBottom.textContent += '.';
+        }
+      }
+
+      handleNegative() {
+        if (this.windowBottom.textContent[0] === '-') {
+          this.windowBottom.textContent = this.windowBottom.textContent.slice(1);
+        } else {
+          this.windowBottom.textContent = '-' + this.windowBottom.textContent;
+        }
+      }
+
+      calculate() {
+        let operator = this.windowTop.textContent.slice(-1);
+        let firstNum = Number(this.windowTop.textContent.slice(0, -1));
+        let secondNum = Number(this.windowBottom.textContent);
+        let result;
+        if (operator === '+') {
+          result = firstNum + secondNum;
+        } else if (operator === '-') {
+          result = firstNum - secondNum;
+        } else if (operator === '*') {
+          result = firstNum * secondNum;
+        } else if (operator === '/') {
+          result = firstNum / secondNum;
+        } else if (operator === '%') {
+          result = firstNum % secondNum;
+        }
+
+        return result;
+      }
+
+      displayResult(result) {
+        this.resetWindow();
+        this.windowBottom.textContent = result;
+        this.windowBottom.dataset.cleared = 'false';
+        this.windowBottom.dataset.answer = 'true';
+      }
+
+      attachListeners() {
+        this.buttons.addEventListener('click', (event) => {
+          let button = event.target;
+          let id = button.id;
+          let value = CalculatorManager.BUTTON_NAMES[id];
+
+          if (this.windowBottom.dataset.answer === 'true') {
+            this.resetWindow();
+            this.windowBottom.dataset.answer = 'false';
+          }
+
+          if (/[0-9]/.test(value)) {
+            this.handleNumber(value);
+          } else if (value === 'equals') {
+            let result = this.calculate();
+            this.displayResult(result);
+          } else if (value === 'point') {
+            this.handleDecimal();
+          } else if (value === 'negative') {
+            this.handleNegative();
+          } else if (value === 'clear') {
+            this.resetWindow(false);
+          } else if (value === 'clear-all') {
+            this.resetWindow();
+          } else if (!this.windowTop.classList.contains('visible')) {
+            this.windowBottom.textContent += value;
+            this.bankValue();
+          }          
+        });
+      }
+    }
+
+    let manager = new CalculatorManager();
   </script>
 </head>
 <body>
   <main id="calculator" data-result="false">
     <section id="screen">
-      <div id="entry-top">.</div>
-      <div id="entry-bottom">0</div>
+      <div id="entry-top" class="hidden">.</div>
+      <div id="entry-bottom" data-cleared="true">0</div>
     </section>
     <section id="buttons">
       <button class="button" id="ce">CE</button>
@@ -200,9 +254,9 @@ should have two parts:
 A lower part—the entry window—that shows the current entry: the number you
 are entering or the most recent result.
 An upper part—the operation window—that shows the operation in progress,
-e.g., 1 + 5 / 2 +.
-Calculator buttons
+e.g., 1 + 5 / 2 +
 
+Calculator buttons
 The calculator should have functioning buttons for the following:
 
 All digits: 0-9
@@ -211,8 +265,8 @@ The NEG button negates the value in the entry window.
 The CE button clears the entry window and replaces it with 0.
 The C button clears both the entry and operation windows and leaves a value
 of 0 in the entry window.
-Operations
 
+Operations
 When the user clicks a digit button, append the digit to the number in the
 entry window. If the value in the entry window is 0, replace the 0 with the
 entered digit.

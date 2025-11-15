@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sign-up</title>
+  <style>
+    input {
+      display: inline-block;
+      margin: 2px 5px 15px 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 2px;
+    }
+
+    body {
+      height: 100%;
+      width: 100%;
+      background-color: mintcream;
+    }
+    
+    main {
+      width: 650px;
+      background-color: white;
+      border-color: black;
+      border-radius: 4px;
+      border-width: 2px;
+      border-style: dashed;
+      padding: 10px 10px 10px 25px;
+    }
+
+    #note {
+      color: grey;
+    }
+
+    #char-length {
+      color: grey;
+    }
+
+    #phone-format {
+      color: grey;
+    }
+
+    .visible-error {
+      padding: 6px;
+      border-radius: 1px;
+      border-width: 1px;
+      border-color: red;
+      border-style: dashed;
+      background-color: lightcyan;
+      margin-left: 25px;
+    }
+
+    .hidden {
+      visibility: hidden;
+    }
+
+    #form-error {
+      margin-left: 0px;
+      margin-bottom: 10px;
+    }
+
+    fieldset {
+      padding: 0;
+      border-width: 0;
+    }
+
+    input.credit-card {
+      width: 10%;
+    }
+  </style>
+  <script>
+    class SignupForm {
+      constructor() {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.first = document.getElementById('first-name');
+          this.last = document.getElementById('last-name');
+          this.email = document.getElementById('email');
+          this.phone = document.getElementById('phone');
+          this.password = document.getElementById('password');
+          this.submit = document.getElementById('submit');
+          this.form = document.getElementById('form');
+          this.credit1 = document.getElementById('credit-1');
+          this.credit2 = document.getElementById('credit-2');
+          this.credit3 = document.getElementById('credit-3');
+          this.credit4 = document.getElementById('credit-4');
+          this.creditField = document.getElementById('credit-fieldset');
+
+          this.addListeners();
+        });
+      }
+
+      validateEmail() {
+        let validityObj = this.email.validity;
+        let errorBox = document.getElementById('error-email');
+        let errorMessage;
+
+        if (validityObj.patternMismatch) {
+          errorMessage = 'Email must be in xxx@yyy.zzz format'
+        } else if (validityObj.valueMissing) {
+          errorMessage = 'Email is required'
+        }
+
+        this.displayError(errorMessage, errorBox, this.email);
+      }
+
+      validatePhone() {
+        let validityObj = this.phone.validity;
+        let errorBox = document.getElementById('error-phone');
+        let errorMessage;
+
+        if (validityObj.patternMismatch) {
+          errorMessage = "Phone number must be in ###-###-#### format";
+        }
+
+        this.displayError(errorMessage, errorBox, this.phone);
+      }
+
+      validateFirstName() {
+        let validityObj = this.first.validity;
+        let errorBox = document.getElementById(`error-first-name`);
+        let errorMessage;
+
+        if (validityObj.valueMissing) {
+          errorMessage = `First name is required`;
+        } else if (validityObj.patternMismatch) {
+          errorMessage = `Only letters, apostrophes, & spaces`
+        }
+
+        this.displayError(errorMessage, errorBox, this.first);
+      }
+
+      validateLastName() {
+        let validityObj = this.last.validity;
+        let errorBox = document.getElementById(`error-last-name`);
+        let errorMessage;
+
+        if (validityObj.valueMissing) {
+          errorMessage = `Last name is required`;
+        } else if (validityObj.patternMismatch) {
+          errorMessage = `Only letters, apostrophes, & spaces`
+        }
+
+        this.displayError(errorMessage, errorBox, this.last);
+      }
+
+      validatePassword() {
+        let validityObj = this.password.validity;
+        let errorBox = document.getElementById('error-password');
+        let errorMessage;
+
+        if (validityObj.tooShort) {
+          errorMessage = "Password must be at least 10 characters long";
+        } else if (validityObj.valueMissing) {
+          errorMessage = "Password is required";
+        }
+
+        this.displayError(errorMessage, errorBox, this.password);
+      }
+
+      validateCreditCard() {
+        if (this.creditField.textContent === '') return;
+
+        let valid1 = this.credit1.validity;
+        let valid2 = this.credit2.validity;
+        let valid3 = this.credit3.validity;
+        let valid4 = this.credit4.validity;
+        let errorBox = document.getElementById('error-credit');
+        let errorMessage;
+
+        if (valid1.patternMismatch || valid2.patternMismatch ||
+            valid3.patternMismatch || valid4.patternMismatch) {
+          errorMessage = 'All credit card fields must be 4 chars'
+        }
+
+        this.displayError(errorMessage, errorBox, this.creditField);
+      }
+
+      displayError(message, errorBox, input) {
+        if (message) {
+          console.log('here')
+          errorBox.classList.remove('hidden');
+          errorBox.classList.add('visible-error');
+          errorBox.textContent = message;
+          input.dataset.error = "true";
+        } else {
+          errorBox.textContent = '';
+          errorBox.classList.remove('visible-error');
+          errorBox.classList.add('hidden');
+          input.dataset.error = "false";
+        }
+      }
+
+      checkAllValid() {
+        let inputs = [...document.querySelectorAll('.validation')];
+        if (inputs.every(input => input.dataset.error === 'false')) {
+          this.form.dataset.error = "false";
+        } else {
+          this.form.dataset.error = "true";
+        }
+      }
+
+      autoTabCreditCard(key, target, event) {
+        if (target.value.length === 3 && /[0-9]/.test(key)) {
+          event.preventDefault();
+          target.value += key;
+          let nextInput = target.nextElementSibling;
+          nextInput.focus();
+        }
+      }
+
+      addListeners() {
+        this.form.addEventListener('blur', (event) => {
+          let target = event.target;
+          let value = target.value;
+          if (target.id === 'email') {
+            this.validateEmail();
+          } else if (target.id === 'phone') {
+            this.validatePhone();
+          } else if (target.id === 'password') {
+            this.validatePassword();
+          } else if (target.id === 'first-name') {
+            this.validateFirstName('first');
+          } else if (target.id === 'last-name') {
+            this.validateLastName('last');
+          } else if (target.classList.contains('credit-card')) {
+            this.validateCreditCard();
+          }
+        }, true);
+
+        this.form.addEventListener('focus', (event) => {
+          if (event.target.tagName !== 'INPUT' ||
+              event.target === this.submit) return;
+
+          let target = event.target;
+          let errorBox;
+          if (target.classList.contains('credit-card')) {
+            errorBox = document.getElementById('error-credit');
+          } else {
+            errorBox = target.nextElementSibling;
+          }
+
+          this.displayError(null, errorBox, target);
+        }, true)
+
+        this.form.addEventListener('submit', (event) => {
+          this.checkAllValid();
+
+          if (this.form.dataset.error === 'true') {
+            event.preventDefault();
+            let errorBox = document.getElementById('form-error');
+            let message = "Fix errors before submitting this form";
+            console.log(`errorBox is ${errorBox}`);
+            this.displayError(message, errorBox, this.form);
+          } else {
+            this.displayError(null, errorBox, this.form);
+          }
+        });
+        
+        this.form.addEventListener('keydown', (event) => {
+          const EXCLUDED = ['Backspace', 'Delete', 'ArrowRight', 'ArrowLeft'];
+          let target = event.target;
+          let key = event.key;
+          
+          if (EXCLUDED.includes(key)) return;
+
+          if ((target === this.credit1 || target === this.credit2 ||
+               target === this.credit3 || target === this.credit4) &&
+               /[^0-9]/.test(key)) {
+            event.preventDefault();
+          } else if (target === this.phone && /[^0-9\-]/.test(key)) {
+            event.preventDefault();
+          } else if ((target === this.first || target === this.last) &&
+                     !/[a-zA-Z'\s]/.test(key)) {
+            event.preventDefault();
+          }
+
+          if ([this.credit1, this.credit2, this.credit3].includes(target)) {
+            this.autoTabCreditCard(key, target, event);
+          }
+        }, true)
+      }
+    }
+
+    let form = new SignupForm();
+  </script>
+</head>
+<body>
+  <main>
+    <h1>Sign Up Form</h1>
+    <form id='form' data-error="true" novalidate>
+    <div class="hidden" id="form-error"></div>
+      <label for="first-name" required>First Name:*</label>
+      <input type='text'
+        id="first-name"
+        placeholder="John"
+        data-error="true"
+        class="validation"
+        pattern="[a-zA-Z'\s]+"
+        required>
+      <span id="error-first-name" class="hidden"></span>
+
+      <label for="last-name">Last Name:*</label>
+      <input type="text"
+        id="last-name"
+        placeholder="Smith"
+        data-error="true"
+        class="validation"
+        pattern="[a-zA-Z'\s]+"
+        required>
+      <span id="error-last-name" class="hidden"></span>
+
+      <label for="phone">Phone number:</label>
+      <input type="tel"
+        id="phone"
+        pattern="^\d{3}-\d{3}-\d{4}$"
+        data-error="false"
+        class="validation"
+        placeholder="555-555-5555">
+      <span id="error-phone" class="hidden"></span>
+
+      <label for="email" >Email:*</label>
+      <input type="email"
+        id="email"
+        placeholder="some_name@host.com"
+        pattern=".+@.+"
+        data-error="true"
+        class="validation"
+        required>
+      <span id="error-email" class="hidden"></span>
+
+      <label for="password">Password:*<span id="char-length"> (minimum 10 chars)</span></label>
+      <input type="password"
+        id="password"
+        minlength="10"
+        data-error="true"
+        class="validation"
+        required>
+      <span id="error-password" class="hidden"></span>
+
+      <label for="credit-card">Credit Card Number</label>
+
+      <fieldset id="credit-fieldset" dataset-error="false" class="validation">
+        <input type="text"
+          class="credit-card"
+          id="credit-1"
+          name="credit-card"
+          maxlength="4"
+          pattern="\d{4}">-
+        <input type="text"
+          class="credit-card"
+          id="credit-2"
+          name="credit-card"
+          maxlength="4"
+          pattern="\d{4}">-
+        <input type="text"
+          class="credit-card" 
+          id="credit-3"
+          name="credit-card"
+          maxlength="4"
+          pattern="\d{4}">-
+        <input type="text"
+          class="credit-card"
+          id="credit-4"
+          name="credit-card"
+          maxlength="4"
+          pattern="\d{4}">
+        <span id="error-credit" class="hidden"></span>
+      </fieldset>
+
+      <label id="note">*field required</label>
+
+      <input type="submit"
+        value="Sign up"
+        id="submit">
+    </form>
+  </main>
+</body>
+</html>

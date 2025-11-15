@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Cars</title>
+  <style>
+    #grid {
+      display: grid;
+      grid-template:
+        "a a a" 175px
+        "a a a" 175px
+        "a a a" 175px / 1fr 1fr 1fr;
+    }
+
+    img {
+      width: 100px;
+      height: 67px;
+      padding: 10px 0;
+    }
+
+    /* p {
+      margin: 0;
+      padding: 2px;
+    } */
+  </style>
+  <script>
+    class CarManager {
+      static CARS = [
+        { make: 'Honda', image: './images/honda-accord-2005.jpg', model: 'Accord', year: 2005, price: 7000 },
+        { make: 'Honda', image: './images/honda-accord-2008.jpg', model: 'Accord', year: 2008, price: 11000 },
+        { make: 'Toyota', image: './images/toyota-camry-2009.jpg', model: 'Camry', year: 2009, price: 12500 },
+        { make: 'Toyota', image: './images/toyota-corrolla-2016.jpg', model: 'Corolla', year: 2016, price: 15000 },
+        { make: 'Suzuki', image: './images/suzuki-swift-2014.jpg', model: 'Swift', year: 2014, price: 9000 },
+        { make: 'Audi', image: './images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 25000 },
+        { make: 'Audi', image: './images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 26000 },
+      ];
+
+      static PROPERTIES = ['make', 'model', 'year', 'price'];
+
+      constructor() {
+        document.addEventListener('DOMContentLoaded', () => {
+          this.grid = document.getElementById('grid');
+          this.form = document.getElementById('filter');
+          this.freshGrid(CarManager.CARS);
+          this.populateForm();
+          this.makeSelect = document.getElementById('make');
+          this.modelSelect = document.getElementById('model');
+          this.yearSelect = document.getElementById('year');
+          this.priceSelect = document.getElementById('price');
+          this.submit = document.getElementById('submit');
+          this.reset = document.getElementById('reset');
+          this.addListeners();
+        });
+      }
+
+      freshGrid(cars) {
+        this.clearGrid();
+
+        cars.forEach(car => {
+          let figure = document.createElement('figure');
+          grid.appendChild(figure);
+
+          let img = document.createElement('img');
+          img.src = car.image;
+          figure.appendChild(img);
+
+          let figcaption = document.createElement('figcaption');
+          figure.appendChild(figcaption);
+
+          let make = document.createElement('div');
+          make.classList.add('make');
+          make.textContent = car.make;
+          figcaption.appendChild(make);
+
+          let model = document.createElement('div');
+          model.classList.add('model');
+          model.textContent = car.model;
+          figcaption.appendChild(model);
+
+          let year = document.createElement('div');
+          year.classList.add('year');
+          year.textContent = car.year;
+          figcaption.appendChild(year);
+
+          let price = document.createElement('div');
+          price.classList.add('price');
+          price.textContent = '$' + car.price;
+          figcaption.appendChild(price);
+        });
+      }
+
+      clearGrid() {
+        let figures = document.querySelectorAll('figure');
+        figures.forEach(figure => figure.remove());
+      }
+
+      populateForm() {
+        CarManager.PROPERTIES.forEach(prop => {
+          let label = document.createElement('label');
+          label.setAttribute('for', prop);
+          label.textContent = `Car's ${prop}:`;
+          this.form.appendChild(label);
+
+          let select = document.createElement('select');
+          select.id = prop;
+          select.name = prop;
+          select.classList.add('select');
+          this.form.appendChild(select);
+
+          let anyOption = document.createElement('option');
+          anyOption.value = `any-${prop}`;
+          anyOption.textContent = `Any ${prop}`;
+          select.appendChild(anyOption);
+
+          let uniqOptions = this.getUniqs(prop);
+          uniqOptions.forEach(uniqVal => {
+            let option = document.createElement('option');
+            option.value = uniqVal;
+            option.textContent = uniqVal;
+            select.appendChild(option);
+          });
+        })
+
+        let submit = document.createElement('input');
+        submit.id = 'submit';
+        submit.setAttribute('type', 'submit');
+
+        let reset = document.createElement('input');
+        reset.id = 'reset';
+        reset.setAttribute('type', 'reset');
+
+        this.form.appendChild(submit);
+        this.form.appendChild(reset);
+      }
+
+      getUniqs(prop) {
+        let uniqs = CarManager.CARS.reduce((uniqs, car) => {
+          if (!uniqs.includes(car[prop])) uniqs.push(car[prop]);
+          return uniqs;
+        }, []);
+
+        if (prop === 'price') {
+          return uniqs.sort((a, b) => a - b);
+        } else {
+          return uniqs.sort();
+        }
+      }
+
+      filterCars(unwantedVals) {
+        // create a new array of car objects by filtering CarManager.CARS
+        // such that any car that has an unwanted val in any category is removed
+        // then call this.freshGrid(filteredCars)
+      }
+
+      addListeners() {
+        this.form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          let selects = [...document.getElementsByClassName('select')];
+          let selections = selects.map(select => select.value);
+          let uniqs = CarManager.PROPERTIES.flatMap(prop => this.getUniqs(prop))
+                      .map(val => String(val));
+          let unwantedValues = uniqs.filter(uniq => !selections.includes(uniq));
+
+          filterCars(unwantedValues);
+        });
+
+        this.form.addEventListener('reset', (event) => {
+          event.preventDefault();
+          this.freshGrid(CarManager.CARS);
+        })
+      }
+    }
+
+    let manager = new CarManager();
+  </script>
+</head>
+<body>
+  <h1>Cars</h1>
+  <div id="grid"></div>
+  <h1>Filter</h1>
+  <form id="filter">
+  </form>
+</body>
+</html>
+
+<!-- 
+Create an application that shows a grid of cars from a collection of cars.
+Users can filter the cars by make, model, price, and year of manufacture.
+
+Specifications
+Display the following information for each car:
+
+an image
+make and model
+price
+year manufactured
+The page should have a filtering area that contains the following:
+
+A select box for car makes. Populate the options by selecting all the unique makes from our car collection
+A select box for car models. Populate the options by selecting all the unique car models from our car collection
+A select box for years. Populate the options by selecting all the unique years from our car collection
+A select box for price. Populate the options by selecting all the unique prices from our car collection
+A filter button
+When the user clicks the filter button, filter the cars so that the cars
+displayed all have the same price, model, make and manufacture year as the selected values.
+
+After filtering by make, model selectoin box should be edited to include only
+those models that are made by the selected maker.
+
+-->
